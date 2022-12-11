@@ -3,8 +3,8 @@
 
 <img align="right" src=".github/FancyFormat.png" height="200" width="200">
 
-![version-shield]
-![license-shield]
+[![version-shield]](#-work-in-progress-)
+[![license-shield]](LICENSE)
 
 # FancyFormat
 A simple library to translate message formats like
@@ -19,7 +19,7 @@ to expand JSON-based format that supports all features that are available in one
 new format can be used to store messages without sacrificing information (by storing text in only one format) or using
 too much disk space (by storing text in all formats).
 
-### Work in progress!
+### !!! Work in progress !!!
 This project is still in development and does not have a stable release yet.
 Sadly, I can't provide an exact due date, but it should be finished before 2023.
 
@@ -77,3 +77,35 @@ Hey §b@TurtleBot§r, look at §othis cool §lformatting!
 Both of which would look like this in-game:
 
 <img src=".github/example-minecraft.png" width="750">
+
+# Usage
+To translate between formats you first need to create a `FancyFormatter` - A builder class that manages formatting rules.
+Now you can create `FormatText` objects. These are an abstract representation of a message that store data as described
+[above](#example). From that object you can parse any supported format.
+
+```java
+FancyFormatter formatter = new FancyFormatter();
+
+// create the abstract representation
+FormatText text = formatter.newText("A **Discord** message", Format.DISCORD);
+
+// translate the message into any format
+String mcLegacyMessage = text.toString(Format.MINECRAFT_LEGACY);
+String mcJsonMessage   = text.toString(Format.MINECRAFT_JSON);
+String turtleMessage   = text.toString(Format.TURTLE);
+// ...
+```
+Currently, there are 5 supported formats: `PLAINTEXT`, `TURTLE`, `DISCORD`, `MINECRAFT_JSON` and `MINECRAFT_LEGACY`
+
+To enable storing messages with minimal capacity requirements there is also native format. It stores the message in its
+original format prepended by an indicator as to what format that is. This way messages can be restored into different
+formats universally.
+Parsing a message to its native format doesn't require a `FancyFormatter`, but restoring them does as the message will
+be parsed into a `FormatText`:
+```java
+// create native string
+String nativeString = Format.DISCORD.toNative("A §lMinecraft§r message");
+
+// restore message
+FormatText text = formatter.ofNative(nativeString);
+```
