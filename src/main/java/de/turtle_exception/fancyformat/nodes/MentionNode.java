@@ -29,8 +29,7 @@ public class MentionNode extends Node implements ContentNode {
 
     @Override
     public @NotNull String getContent() {
-        // TODO: MentionPolicy
-        return content;
+        return formatter.getMentionAliasProvider().apply(type, content);
     }
 
     public @NotNull String getContentRaw() {
@@ -38,7 +37,17 @@ public class MentionNode extends Node implements ContentNode {
     }
 
     public @NotNull String parseDiscord() {
-        return "<" + content + ">";
+        return "<" + switch (type) {
+            case USER          -> "@";
+            case USER_ALT      -> "@!";
+            case CHANNEL       -> "#";
+            case ROLE          -> "@&";
+            case SLASH_COMMAND -> "/";
+            case STANDARD_EMOJI        -> "";
+            case CUSTOM_EMOJI          -> ":";
+            case CUSTOM_EMOJI_ANIMATED -> "a:";
+            case UNIX_TIMESTAMP, UNIX_TIMESTAMP_STYLED -> "t:";
+        } + content + ">";
     }
 
     @Override

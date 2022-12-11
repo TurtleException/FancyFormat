@@ -3,14 +3,22 @@ package de.turtle_exception.fancyformat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.function.BiFunction;
+
+@SuppressWarnings("unused")
 public class FancyFormatter {
     // TODO: is this guaranteed to be a char?
     private char minecraftFormattingCode = '§';
 
+    private BiFunction<MentionType, String, String> mentionAliasProvider;
+
     private Gson gson = null;
 
-    public FancyFormatter() { }
+    public FancyFormatter() {
+        this.setMentionAliasProvider(null);
+    }
 
     /* - CREATE TEXT - */
 
@@ -41,6 +49,18 @@ public class FancyFormatter {
 
     public FancyFormatter setMinecraftFormattingCode(char minecraftFormattingCode) {
         this.minecraftFormattingCode = minecraftFormattingCode;
+        return this;
+    }
+
+    public @NotNull BiFunction<MentionType, String, String> getMentionAliasProvider() {
+        return mentionAliasProvider;
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    public FancyFormatter setMentionAliasProvider(@Nullable BiFunction<MentionType, String, String> mentionAliasProvider) {
+        this.mentionAliasProvider = mentionAliasProvider == null
+                ? ((mentionType, s) -> s)
+                : mentionAliasProvider;
         return this;
     }
 }
