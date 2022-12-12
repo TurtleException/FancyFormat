@@ -1,9 +1,8 @@
 package de.turtle_exception.fancyformat.styles;
 
-import de.turtle_exception.fancyformat.Style;
 import org.jetbrains.annotations.NotNull;
 
-public enum FormatStyle implements Style {
+public enum FormatStyle implements VisualStyle {
     BOLD(         "**", "bold"         , 'l'),
     ITALICS(      "*" , "italic"       , 'o'),
     // this has to be differentiated or overlapping formats would cancel out in Discord md ("aaa *bbb _ccc* ddd_ eee")

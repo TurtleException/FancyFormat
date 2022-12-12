@@ -7,8 +7,7 @@ import de.turtle_exception.fancyformat.Style;
 import de.turtle_exception.fancyformat.nodes.MentionNode;
 import de.turtle_exception.fancyformat.nodes.StyleNode;
 import de.turtle_exception.fancyformat.nodes.TextNode;
-import de.turtle_exception.fancyformat.styles.Color;
-import de.turtle_exception.fancyformat.styles.FormatStyle;
+import de.turtle_exception.fancyformat.styles.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -25,9 +24,16 @@ public class MinecraftLegacyBuilder extends MessageBuilder {
         if (node instanceof TextNode tNode)
             return tNode.getContent();
 
-        // TODO: Format according to FancyFormatter rules
-        if (node instanceof MentionNode mNode)
-            return mNode.parseDiscord();
+        if (node instanceof MentionNode mNode) {
+            StringBuilder builder = new StringBuilder();
+
+            for (VisualStyle style : node.getFormatter().getMentionStyles()) {
+                builder.append(node.getFormatter().getMinecraftFormattingCode());
+                builder.append(style.getLegacyChar());
+            }
+
+            return builder.append(mNode.getContent()).toString();
+        }
 
         String prefix    = getFormat(node);
         String inherited = null;
@@ -84,6 +90,28 @@ public class MinecraftLegacyBuilder extends MessageBuilder {
                 return  ""
                         + node.getFormatter().getMinecraftFormattingCode()
                         + cStyle.getCode();
+            }
+
+            if (style instanceof CodeBlock) {
+                StringBuilder builder = new StringBuilder();
+
+                for (VisualStyle codeStyle : node.getFormatter().getCodeStyles()) {
+                    builder.append(node.getFormatter().getMinecraftFormattingCode());
+                    builder.append(codeStyle);
+                }
+
+                return builder.toString();
+            }
+
+            if (style instanceof Quote) {
+                StringBuilder builder = new StringBuilder();
+
+                for (VisualStyle quoteStyle : node.getFormatter().getQuoteStyles()) {
+                    builder.append(node.getFormatter().getMinecraftFormattingCode());
+                    builder.append(quoteStyle);
+                }
+
+                return builder.toString();
             }
 
             // TODO: format other styles according to FancyFormatter rules

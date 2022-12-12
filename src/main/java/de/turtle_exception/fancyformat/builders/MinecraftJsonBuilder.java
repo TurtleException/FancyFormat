@@ -4,11 +4,11 @@ import com.google.gson.*;
 import de.turtle_exception.fancyformat.MessageBuilder;
 import de.turtle_exception.fancyformat.Node;
 import de.turtle_exception.fancyformat.Style;
-import de.turtle_exception.fancyformat.nodes.ContentNode;
-import de.turtle_exception.fancyformat.nodes.RootNode;
-import de.turtle_exception.fancyformat.nodes.StyleNode;
+import de.turtle_exception.fancyformat.nodes.*;
 import de.turtle_exception.fancyformat.styles.Color;
 import de.turtle_exception.fancyformat.styles.FormatStyle;
+import de.turtle_exception.fancyformat.styles.Quote;
+import de.turtle_exception.fancyformat.styles.VisualStyle;
 import org.jetbrains.annotations.NotNull;
 
 public class MinecraftJsonBuilder extends MessageBuilder {
@@ -22,7 +22,7 @@ public class MinecraftJsonBuilder extends MessageBuilder {
     }
 
     public @NotNull JsonElement buildJson() {
-        if (node instanceof ContentNode cNode)
+        if (node instanceof TextNode cNode)
             return new JsonPrimitive(cNode.getContent());
 
         // TODO: event node
@@ -34,21 +34,35 @@ public class MinecraftJsonBuilder extends MessageBuilder {
             return arr;
         }
 
-        // this should never be true
-        if (!(node instanceof StyleNode sNode))
-            return JsonNull.INSTANCE;
-
-        Style style = sNode.getStyle();
-
         JsonObject json = new JsonObject();
 
-        if (style instanceof FormatStyle wStyle)
-            json.addProperty(wStyle.getName(), true);
+        if (node instanceof MentionNode) {
+            for (VisualStyle mentionStyle : node.getFormatter().getMentionStyles()) {
+                if (mentionStyle instanceof Color cStyle)
+                    json.addProperty("color", cStyle.getName());
+                if (mentionStyle instanceof FormatStyle fStyle)
+                    json.addProperty(fStyle.getName(), true);
+            }
+        }
 
-        if (style instanceof Color cStyle)
-            json.addProperty("color", cStyle.getName());
+        if (node instanceof StyleNode sNode) {
+            Style style = sNode.getStyle();
 
-        // TODO: include comment styles according to FancyFormatter rules
+            if (style instanceof Color cStyle)
+                json.addProperty("color", cStyle.getName());
+
+            if (style instanceof FormatStyle fStyle)
+                json.addProperty(fStyle.getName(), true);
+
+            if (style instanceof Quote) {
+                for (VisualStyle quoteStyle : node.getFormatter().getQuoteStyles()) {
+                    if (quoteStyle instanceof Color cStyle)
+                        json.addProperty("color", cStyle.getName());
+                    if (quoteStyle instanceof FormatStyle fStyle)
+                        json.addProperty(fStyle.getName(), true);
+                }
+            }
+        }
 
         JsonArray extra = new JsonArray();
         for (Node child : node.getChildren())

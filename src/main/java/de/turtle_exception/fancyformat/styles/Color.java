@@ -1,9 +1,8 @@
 package de.turtle_exception.fancyformat.styles;
 
-import de.turtle_exception.fancyformat.Style;
 import org.jetbrains.annotations.NotNull;
 
-public enum Color implements Style {
+public enum Color implements VisualStyle {
     BLACK(       '0', "black"       ,   0,   0,   0,   0,   0,   0),
     DARK_BLUE(   '1', "dark_blue"   ,   0,   0, 170,   0,   0,  42),
     DARK_GREEN(  '2', "dark_green"  ,   0, 170,   0,   0,  42,   0),
