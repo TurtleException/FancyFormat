@@ -6,7 +6,7 @@ import de.turtle_exception.fancyformat.nodes.StyleNode;
 import de.turtle_exception.fancyformat.nodes.UnresolvedNode;
 import de.turtle_exception.fancyformat.styles.CodeBlock;
 import de.turtle_exception.fancyformat.styles.Quote;
-import de.turtle_exception.fancyformat.styles.WrapperStyle;
+import de.turtle_exception.fancyformat.styles.FormatStyle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DiscordBuffer extends Buffer {
-    private final StyleMarker markerBold          = new StyleMarker('*', 2, WrapperStyle.BOLD);
-    private final StyleMarker markerItalicsStar   = new StyleMarker('*', 1, WrapperStyle.ITALICS);
-    private final StyleMarker markerUnderline     = new StyleMarker('_', 2, WrapperStyle.UNDERLINE);
-    private final StyleMarker markerItalicsLine   = new StyleMarker('_', 1, WrapperStyle.ITALICS_ALT);
-    private final StyleMarker markerStrikethrough = new StyleMarker('~', 2, WrapperStyle.STRIKETHROUGH);
-    private final StyleMarker markerSpoiler       = new StyleMarker('|', 2, WrapperStyle.SPOILER);
+    private final StyleMarker markerBold          = new StyleMarker('*', 2, FormatStyle.BOLD);
+    private final StyleMarker markerItalicsStar   = new StyleMarker('*', 1, FormatStyle.ITALICS);
+    private final StyleMarker markerUnderline     = new StyleMarker('_', 2, FormatStyle.UNDERLINE);
+    private final StyleMarker markerItalicsLine   = new StyleMarker('_', 1, FormatStyle.ITALICS_ALT);
+    private final StyleMarker markerStrikethrough = new StyleMarker('~', 2, FormatStyle.STRIKETHROUGH);
+    private final StyleMarker markerSpoiler       = new StyleMarker('|', 2, FormatStyle.SPOILER);
     private final StyleMarker markerCodeBlock     = new StyleMarker('`', 3, CodeBlock.BLOCK);
     private final StyleMarker markerCodeInline    = new StyleMarker('`', 1, CodeBlock.INLINE);
 

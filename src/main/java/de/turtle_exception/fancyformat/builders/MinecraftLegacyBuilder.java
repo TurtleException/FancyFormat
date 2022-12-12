@@ -8,7 +8,7 @@ import de.turtle_exception.fancyformat.nodes.MentionNode;
 import de.turtle_exception.fancyformat.nodes.StyleNode;
 import de.turtle_exception.fancyformat.nodes.TextNode;
 import de.turtle_exception.fancyformat.styles.Color;
-import de.turtle_exception.fancyformat.styles.WrapperStyle;
+import de.turtle_exception.fancyformat.styles.FormatStyle;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -74,10 +74,10 @@ public class MinecraftLegacyBuilder extends MessageBuilder {
         if (node instanceof StyleNode sNode) {
             Style style = sNode.getStyle();
 
-            if (style instanceof WrapperStyle wStyle) {
+            if (style instanceof FormatStyle wStyle) {
                 return ""
                         + node.getFormatter().getMinecraftFormattingCode()
-                        + wStyle.getMinecraftCode();
+                        + wStyle.getCode();
             }
 
             if (style instanceof Color cStyle) {

@@ -8,7 +8,7 @@ import de.turtle_exception.fancyformat.nodes.ContentNode;
 import de.turtle_exception.fancyformat.nodes.RootNode;
 import de.turtle_exception.fancyformat.nodes.StyleNode;
 import de.turtle_exception.fancyformat.styles.Color;
-import de.turtle_exception.fancyformat.styles.WrapperStyle;
+import de.turtle_exception.fancyformat.styles.FormatStyle;
 import org.jetbrains.annotations.NotNull;
 
 public class MinecraftJsonBuilder extends MessageBuilder {
@@ -42,8 +42,8 @@ public class MinecraftJsonBuilder extends MessageBuilder {
 
         JsonObject json = new JsonObject();
 
-        if (style instanceof WrapperStyle wStyle)
-            json.addProperty(wStyle.getMinecraftName(), true);
+        if (style instanceof FormatStyle wStyle)
+            json.addProperty(wStyle.getName(), true);
 
         if (style instanceof Color cStyle)
             json.addProperty("color", cStyle.getName());

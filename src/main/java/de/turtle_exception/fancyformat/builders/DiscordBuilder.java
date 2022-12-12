@@ -9,7 +9,7 @@ import de.turtle_exception.fancyformat.nodes.StyleNode;
 import de.turtle_exception.fancyformat.nodes.TextNode;
 import de.turtle_exception.fancyformat.styles.CodeBlock;
 import de.turtle_exception.fancyformat.styles.Quote;
-import de.turtle_exception.fancyformat.styles.WrapperStyle;
+import de.turtle_exception.fancyformat.styles.FormatStyle;
 import org.jetbrains.annotations.NotNull;
 
 public class DiscordBuilder extends MessageBuilder {
@@ -33,9 +33,9 @@ public class DiscordBuilder extends MessageBuilder {
         if (node instanceof StyleNode sNode) {
             Style style = sNode.getStyle();
 
-            if (style instanceof WrapperStyle wStyle) {
-                builder.insert(0, wStyle.getDiscordMdChars());
-                builder.append(wStyle.getDiscordMdChars());
+            if (style instanceof FormatStyle wStyle) {
+                builder.insert(0, wStyle.getWrapper());
+                builder.append(wStyle.getWrapper());
             }
 
             if (style instanceof Quote) {

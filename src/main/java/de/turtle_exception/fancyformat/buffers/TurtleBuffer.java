@@ -8,7 +8,7 @@ import de.turtle_exception.fancyformat.nodes.*;
 import de.turtle_exception.fancyformat.styles.CodeBlock;
 import de.turtle_exception.fancyformat.styles.Color;
 import de.turtle_exception.fancyformat.styles.Quote;
-import de.turtle_exception.fancyformat.styles.WrapperStyle;
+import de.turtle_exception.fancyformat.styles.FormatStyle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,8 +65,8 @@ public class TurtleBuffer extends Buffer {
         Style style = null;
 
         if (styleStr != null) {
-            for (WrapperStyle value : WrapperStyle.values()) {
-                if (styleStr.equals(value.getMinecraftName())) {
+            for (FormatStyle value : FormatStyle.values()) {
+                if (styleStr.equals(value.getName())) {
                     style = value;
                     break;
                 }

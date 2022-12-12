@@ -8,7 +8,7 @@ import de.turtle_exception.fancyformat.nodes.StyleNode;
 import de.turtle_exception.fancyformat.nodes.TextNode;
 import de.turtle_exception.fancyformat.nodes.UnresolvedNode;
 import de.turtle_exception.fancyformat.styles.Color;
-import de.turtle_exception.fancyformat.styles.WrapperStyle;
+import de.turtle_exception.fancyformat.styles.FormatStyle;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -102,21 +102,21 @@ public class MinecraftLegacyBuffer extends Buffer {
             if (code == value.getCode())
                 return value;
 
-        for (WrapperStyle value : WrapperStyle.values())
-            if (code == value.getMinecraftCode())
+        for (FormatStyle value : FormatStyle.values())
+            if (code == value.getCode())
                 return this.sanitizeStyle(value);
 
         return null;
     }
 
-    private Style sanitizeStyle(@NotNull WrapperStyle style) {
+    private Style sanitizeStyle(@NotNull FormatStyle style) {
         if (parent instanceof StyleNode sNode) {
             Style parentStyle = sNode.getStyle();
 
-            if (style.equals(WrapperStyle.ITALICS) && parentStyle.equals(WrapperStyle.BOLD))
-                return WrapperStyle.ITALICS_ALT;
-            if (style.equals(WrapperStyle.ITALICS_ALT) && parentStyle.equals(WrapperStyle.UNDERLINE))
-                return WrapperStyle.ITALICS;
+            if (style.equals(FormatStyle.ITALICS) && parentStyle.equals(FormatStyle.BOLD))
+                return FormatStyle.ITALICS_ALT;
+            if (style.equals(FormatStyle.ITALICS_ALT) && parentStyle.equals(FormatStyle.UNDERLINE))
+                return FormatStyle.ITALICS;
         }
 
         return style;

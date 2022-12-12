@@ -13,7 +13,7 @@ import de.turtle_exception.fancyformat.nodes.TextNode;
 import de.turtle_exception.fancyformat.styles.CodeBlock;
 import de.turtle_exception.fancyformat.styles.Color;
 import de.turtle_exception.fancyformat.styles.Quote;
-import de.turtle_exception.fancyformat.styles.WrapperStyle;
+import de.turtle_exception.fancyformat.styles.FormatStyle;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -53,8 +53,8 @@ public class TurtleBuilder extends MessageBuilder {
         if (node instanceof StyleNode sNode) {
             Style style = sNode.getStyle();
 
-            if (style instanceof WrapperStyle wStyle)
-                json.addProperty("style", wStyle.getMinecraftName());
+            if (style instanceof FormatStyle wStyle)
+                json.addProperty("style", wStyle.getName());
 
             if (style instanceof CodeBlock cStyle)
                 json.addProperty("code-block", cStyle.name());

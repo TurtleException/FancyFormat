@@ -11,7 +11,7 @@ import de.turtle_exception.fancyformat.nodes.StyleNode;
 import de.turtle_exception.fancyformat.nodes.TextNode;
 import de.turtle_exception.fancyformat.nodes.UnresolvedNode;
 import de.turtle_exception.fancyformat.styles.Color;
-import de.turtle_exception.fancyformat.styles.WrapperStyle;
+import de.turtle_exception.fancyformat.styles.FormatStyle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,11 +55,11 @@ public class MinecraftJsonBuffer extends Buffer {
             }
         }
 
-        for (WrapperStyle value : WrapperStyle.values()) {
-            if (!isTrue(value.getMinecraftName())) continue;
+        for (FormatStyle value : FormatStyle.values()) {
+            if (!isTrue(value.getName())) continue;
 
             StyleNode        styleNode = new StyleNode(parent, value);
-            UnresolvedNode contentNode = new UnresolvedNode(styleNode, toReducedString(value.getMinecraftName()), Format.MINECRAFT_JSON);
+            UnresolvedNode contentNode = new UnresolvedNode(styleNode, toReducedString(value.getName()), Format.MINECRAFT_JSON);
             contentNode.notifyParent();
 
             return List.of(styleNode);
