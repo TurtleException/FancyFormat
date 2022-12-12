@@ -25,8 +25,6 @@ public class MinecraftJsonBuilder extends MessageBuilder {
         if (node instanceof TextNode cNode)
             return new JsonPrimitive(cNode.getContent());
 
-        // TODO: event node
-
         if (node instanceof RootNode rNode) {
             JsonArray arr = new JsonArray();
             for (Node child : rNode.getChildren())
@@ -35,6 +33,9 @@ public class MinecraftJsonBuilder extends MessageBuilder {
         }
 
         JsonObject json = new JsonObject();
+
+        if (node instanceof ActionNode aNode)
+            json.add(aNode.getType(), aNode.toJson());
 
         if (node instanceof MentionNode) {
             for (VisualStyle mentionStyle : node.getFormatter().getMentionStyles()) {

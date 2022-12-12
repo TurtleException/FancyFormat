@@ -7,9 +7,7 @@ import com.google.gson.JsonPrimitive;
 import de.turtle_exception.fancyformat.Buffer;
 import de.turtle_exception.fancyformat.Format;
 import de.turtle_exception.fancyformat.Node;
-import de.turtle_exception.fancyformat.nodes.StyleNode;
-import de.turtle_exception.fancyformat.nodes.TextNode;
-import de.turtle_exception.fancyformat.nodes.UnresolvedNode;
+import de.turtle_exception.fancyformat.nodes.*;
 import de.turtle_exception.fancyformat.styles.Color;
 import de.turtle_exception.fancyformat.styles.FormatStyle;
 import org.jetbrains.annotations.NotNull;
@@ -65,7 +63,23 @@ public class MinecraftJsonBuffer extends Buffer {
             return List.of(styleNode);
         }
 
-        // TODO: interactivity
+        JsonObject clickEvent = getOptional(() -> object.getAsJsonObject("clickEvent"));
+        if (clickEvent != null) {
+            ClickNode        clickNode = new ClickNode(parent, clickEvent.get("action").getAsString(), clickEvent.get("value").getAsString());
+            UnresolvedNode contentNode = new UnresolvedNode(clickNode, toReducedString("clickEvent"), Format.MINECRAFT_JSON);
+            contentNode.notifyParent();
+
+            return List.of(clickNode);
+        }
+
+        JsonObject hoverEvent = getOptional(() -> object.getAsJsonObject("hoverEvent"));
+        if (hoverEvent != null) {
+            HoverNode        hoverNode = new HoverNode(parent, hoverEvent.get("action").getAsString(), hoverEvent.getAsJsonObject("contents"));
+            UnresolvedNode contentNode = new UnresolvedNode(hoverNode, toReducedString("hoverEvent"), Format.MINECRAFT_JSON);
+            contentNode.notifyParent();
+
+            return List.of(hoverNode);
+        }
 
         // CONTENT & CHILDREN
 
