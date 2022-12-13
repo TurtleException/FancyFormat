@@ -29,7 +29,7 @@ public class MinecraftLegacyBuilder extends MessageBuilder {
 
             for (VisualStyle style : node.getFormatter().getMentionStyles()) {
                 builder.append(node.getFormatter().getMinecraftFormattingCode());
-                builder.append(style.getLegacyChar());
+                builder.append(style.getCode());
             }
 
             return builder.append(mNode.getContent()).toString();
@@ -95,7 +95,7 @@ public class MinecraftLegacyBuilder extends MessageBuilder {
             if (style instanceof CodeBlock) {
                 StringBuilder builder = new StringBuilder();
 
-                for (VisualStyle codeStyle : node.getFormatter().getCodeStyles()) {
+                for (VisualStyle codeStyle : node.getFormatter().getCodeBlockStyles()) {
                     builder.append(node.getFormatter().getMinecraftFormattingCode());
                     builder.append(codeStyle);
                 }

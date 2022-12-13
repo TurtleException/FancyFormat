@@ -2,6 +2,10 @@ package de.turtle_exception.fancyformat.styles;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * A text color. This may be any color supported by minecraft legacy formatting codes.
+ * <br> Custom HEX-colors are not yet supported.
+ */
 public enum Color implements VisualStyle {
     BLACK(       '0', "black"       ,   0,   0,   0,   0,   0,   0),
     DARK_BLUE(   '1', "dark_blue"   ,   0,   0, 170,   0,   0,  42),
@@ -44,16 +48,12 @@ public enum Color implements VisualStyle {
         this.bb = bb;
     }
 
+    @Override
     public char getCode() {
         return code;
     }
 
-    @SuppressWarnings("SpellCheckingInspection")
-    public @NotNull String getMotdCode() {
-        return "\u00A7" + this.code;
-    }
-
-    public String getName() {
+    public @NotNull String getName() {
         return name;
     }
 
