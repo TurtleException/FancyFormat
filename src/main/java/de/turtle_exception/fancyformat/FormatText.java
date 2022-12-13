@@ -56,7 +56,7 @@ public class FormatText {
 
     /**
      * Provides a List of all mentions of type {@code type} this text contains. Mentions are returned as Strings,
-     * representing the raw content of a mention (without "<" / ">" or identifiers).
+     * representing the raw content of a mention (without brackets or identifiers).
      * @param type Type of mentions
      * @return List of mentions of type {@code type}.
      */
@@ -79,7 +79,7 @@ public class FormatText {
      * Returns {@code true} if this text contains a mention of type {@code type} and with the raw content of
      * {@code mention}.
      * @param type Type of the mention.
-     * @param mention Raw content of the mention (without "<" / ">" or identifiers).
+     * @param mention Raw content of the mention (without brackets or identifiers).
      * @return true, if the desired mention exists in this text.
      */
     public boolean mentions(@NotNull MentionType type, @NotNull String mention) {
