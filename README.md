@@ -1,9 +1,9 @@
-[version-shield]: https://img.shields.io/badge/Version-pre--alpha-red
+[version-shield]: https://img.shields.io/github/v/release/TurtleException/FancyFormat?include_prereleases
 [license-shield]: https://img.shields.io/github/license/TurtleException/FancyFormat
 
 <img align="right" src=".github/FancyFormat.png" height="200" width="200">
 
-[![version-shield]](#-work-in-progress-)
+[![version-shield]](https://github.com/TurtleException/FancyFormat/releases)
 [![license-shield]](LICENSE)
 
 # FancyFormat
