@@ -87,7 +87,7 @@ public class MinecraftJsonBuffer extends Buffer {
 
         JsonObject hoverEvent = getOptional(() -> object.getAsJsonObject("hoverEvent"));
         if (hoverEvent != null) {
-            HoverNode        hoverNode = new HoverNode(parent, hoverEvent.get("action").getAsString(), hoverEvent.getAsJsonObject("contents"));
+            HoverNode        hoverNode = new HoverNode(parent, hoverEvent.get("action").getAsString(), hoverEvent.getAsJsonArray("contents"));
             UnresolvedNode contentNode = new UnresolvedNode(hoverNode, toReducedString("hoverEvent"), Format.MINECRAFT_JSON);
             contentNode.notifyParent();
 
