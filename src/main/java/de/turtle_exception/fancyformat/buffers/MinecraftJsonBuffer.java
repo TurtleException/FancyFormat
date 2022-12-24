@@ -34,6 +34,19 @@ public class MinecraftJsonBuffer extends Buffer {
         if (json instanceof JsonPrimitive primitive)
             return List.of(new TextNode(parent, primitive.getAsString()));
 
+        if (json instanceof JsonArray arr) {
+            ArrayList<Node> nodes = new ArrayList<>();
+
+            for (JsonElement element : arr) {
+                UnresolvedNode node = new UnresolvedNode(parent, element.toString(), Format.MINECRAFT_JSON);
+                node.notifyParent();
+
+                nodes.add(node);
+            }
+
+            return nodes;
+        }
+
         if (json instanceof JsonObject) {
             this.object = ((JsonObject) json);
         } else {
