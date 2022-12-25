@@ -3,6 +3,8 @@ package de.turtle_exception.fancyformat;
 import com.google.gson.JsonElement;
 import de.turtle_exception.fancyformat.buffers.*;
 import de.turtle_exception.fancyformat.builders.*;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
@@ -11,7 +13,7 @@ import java.util.function.Function;
 /** Each value of this enum represents a specific text format that is supported by this library. */
 public final class Format<T> {
     /** Raw text that does not have any style or feature. */
-    public static final Format<String> PLAINTEXT = new Format<String>("PLAINTEXT", 0,
+    public static final Format<String> PLAINTEXT = new Format<>("PLAINTEXT", 0,
             PlaintextBuffer::new,
             node -> new PlaintextBuilder(node).build(),
             s -> s);
@@ -24,7 +26,7 @@ public final class Format<T> {
      * Discord Markdown format as specified by
      * <a href="https://support.discord.com/hc/en-us/articles/210298617">Discord Support: Markdown Text 101</a>.
      */
-    public static final Format<String> DISCORD = new Format<String>("DISCORD", 2,
+    public static final Format<String> DISCORD = new Format<>("DISCORD", 2,
             DiscordBuffer::new,
             node -> new DiscordBuilder(node).build(),
             s -> s);
@@ -40,16 +42,20 @@ public final class Format<T> {
      * Minecraft legacy formatting codes as specified by
      * <a href="https://minecraft.fandom.com/wiki/Formatting_codes">Minecraft Wiki: Formatting codes</a>.
      */
-    public static final Format<String> MINECRAFT_LEGACY = new Format<String>("MINECRAFT_LEGACY", 4,
+    public static final Format<String> MINECRAFT_LEGACY = new Format<>("MINECRAFT_LEGACY", 4,
             MinecraftLegacyBuffer::new,
             node -> new MinecraftLegacyBuilder(node).build(),
             s -> s);
+    public static final Format<BaseComponent[]> SPIGOT_COMPONENTS = new Format<>("SPIGOT_FORMAT", 5,
+            SpigotComponentsBuffer::new,
+            node -> new SpigotComponentsBuilder(node).build(),
+            components -> new TextComponent(components).toLegacyText());
 
     private final String name;
     private final int code;
     private final BiFunction<Node, T, Buffer<T>> mutatorStringToNode;
-    private final   Function<Node, T>              mutatorNodeToObject;
-    private final   Function<T   , String>         mutatorObjectToString;
+    private final   Function<Node, T>            mutatorNodeToObject;
+    private final   Function<T   , String>       mutatorObjectToString;
 
     private Format(@NotNull String name, int code, BiFunction<Node, T, Buffer<T>> mutatorStringToNode, Function<Node, T> mutatorNodeToObject, Function<T, String> mutatorObjectToString) {
         this.name = name;
