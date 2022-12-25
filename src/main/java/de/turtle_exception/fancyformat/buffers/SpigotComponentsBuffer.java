@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class SpigotComponentsBuffer extends Buffer<BaseComponent[]> {
     public SpigotComponentsBuffer(@NotNull Node parent, @NotNull BaseComponent[] raw) {
@@ -62,64 +63,24 @@ public class SpigotComponentsBuffer extends Buffer<BaseComponent[]> {
         // TODO: handle false overrides
 
         Boolean bold = component.isBoldRaw();
-        if (bold != null && bold) {
-            BaseComponent duplicate = component.duplicate();
-            duplicate.setBold(null);
-
-            StyleNode styleNode = new StyleNode(parent, FormatStyle.BOLD);
-            UnresolvedNode<BaseComponent[]> contentNode = new UnresolvedNode<>(styleNode, new BaseComponent[]{ duplicate }, Format.SPIGOT_COMPONENTS);
-            contentNode.notifyParent();
-
-            return List.of(styleNode);
-        }
+        if (bold != null && bold)
+            return handleFormat(component, FormatStyle.BOLD, c -> c.setBold(null));
 
         Boolean italic = component.isItalicRaw();
-        if (italic != null && italic) {
-            BaseComponent duplicate = component.duplicate();
-            duplicate.setItalic(null);
-
-            StyleNode styleNode = new StyleNode(parent, FormatStyle.ITALICS);
-            UnresolvedNode<BaseComponent[]> contentNode = new UnresolvedNode<>(styleNode, new BaseComponent[]{ duplicate }, Format.SPIGOT_COMPONENTS);
-            contentNode.notifyParent();
-
-            return List.of(styleNode);
-        }
+        if (italic != null && italic)
+            return handleFormat(component, FormatStyle.ITALICS, c -> c.setItalic(null));
 
         Boolean underline = component.isUnderlinedRaw();
-        if (underline != null && underline) {
-            BaseComponent duplicate = component.duplicate();
-            duplicate.setUnderlined(null);
-
-            StyleNode styleNode = new StyleNode(parent, FormatStyle.UNDERLINE);
-            UnresolvedNode<BaseComponent[]> contentNode = new UnresolvedNode<>(styleNode, new BaseComponent[]{ duplicate }, Format.SPIGOT_COMPONENTS);
-            contentNode.notifyParent();
-
-            return List.of(styleNode);
-        }
+        if (underline != null && underline)
+            return handleFormat(component, FormatStyle.UNDERLINE, c -> c.setUnderlined(null));
 
         Boolean strikethrough = component.isStrikethroughRaw();
-        if (strikethrough != null && strikethrough) {
-            BaseComponent duplicate = component.duplicate();
-            duplicate.setStrikethrough(null);
-
-            StyleNode styleNode = new StyleNode(parent, FormatStyle.STRIKETHROUGH);
-            UnresolvedNode<BaseComponent[]> contentNode = new UnresolvedNode<>(styleNode, new BaseComponent[]{ duplicate }, Format.SPIGOT_COMPONENTS);
-            contentNode.notifyParent();
-
-            return List.of(styleNode);
-        }
+        if (strikethrough != null && strikethrough)
+            return handleFormat(component, FormatStyle.STRIKETHROUGH, c -> c.setStrikethrough(null));
 
         Boolean spoiler = component.isObfuscatedRaw();
-        if (spoiler != null && spoiler) {
-            BaseComponent duplicate = component.duplicate();
-            duplicate.setObfuscated(null);
-
-            StyleNode styleNode = new StyleNode(parent, FormatStyle.SPOILER);
-            UnresolvedNode<BaseComponent[]> contentNode = new UnresolvedNode<>(styleNode, new BaseComponent[]{ duplicate }, Format.SPIGOT_COMPONENTS);
-            contentNode.notifyParent();
-
-            return List.of(styleNode);
-        }
+        if (spoiler != null && spoiler)
+            return handleFormat(component, FormatStyle.SPOILER, c -> c.setObfuscated(null));
 
         ClickEvent clickEvent = component.getClickEvent();
         if (clickEvent != null) {
@@ -221,5 +182,16 @@ public class SpigotComponentsBuffer extends Buffer<BaseComponent[]> {
         }
 
         return nodes;
+    }
+
+    private @NotNull List<Node> handleFormat(@NotNull BaseComponent component, @NotNull FormatStyle style, @NotNull Consumer<BaseComponent> setter) {
+        BaseComponent duplicate = component.duplicate();
+        setter.accept(duplicate);
+
+        StyleNode styleNode = new StyleNode(parent, style);
+        UnresolvedNode<BaseComponent[]> contentNode = new UnresolvedNode<>(styleNode, new BaseComponent[]{ duplicate }, Format.SPIGOT_COMPONENTS);
+        contentNode.notifyParent();
+
+        return List.of(styleNode);
     }
 }

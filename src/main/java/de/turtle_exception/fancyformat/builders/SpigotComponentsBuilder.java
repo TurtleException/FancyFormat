@@ -104,49 +104,18 @@ public class SpigotComponentsBuilder extends MessageBuilder<BaseComponent[]> {
         }
 
         if (node instanceof MentionNode) {
-            for (VisualStyle mentionStyle : node.getFormatter().getMentionStyles()) {
-                if (mentionStyle instanceof Color cStyle)
-                    component.setColor(ChatColor.getByChar(cStyle.getCode()));
-                if (mentionStyle instanceof FormatStyle fStyle)
-                    switch (fStyle.getName()) {
-                        case "bold": component.setBold(true);
-                        case "italic": component.setItalic(true);
-                        case "underline": component.setUnderlined(true);
-                        case "strikethrough": component.setStrikethrough(true);
-                        case "obfuscated": component.setObfuscated(true);
-                    }
-            }
+            for (VisualStyle mentionStyle : node.getFormatter().getMentionStyles())
+                handleStyle(component, mentionStyle);
         }
 
         if (node instanceof StyleNode sNode) {
             Style style = sNode.getStyle();
 
-            if (style instanceof Color cStyle)
-                component.setColor(ChatColor.getByChar(cStyle.getCode()));
+            handleStyle(component, style);
 
-            if (style instanceof FormatStyle fStyle)
-                switch (fStyle.getName()) {
-                    case "bold": component.setBold(true);
-                    case "italic": component.setItalic(true);
-                    case "underline": component.setUnderlined(true);
-                    case "strikethrough": component.setStrikethrough(true);
-                    case "obfuscated": component.setObfuscated(true);
-                }
-
-            if (style instanceof Quote) {
-                for (VisualStyle mentionStyle : node.getFormatter().getQuoteStyles()) {
-                    if (mentionStyle instanceof Color cStyle)
-                        component.setColor(ChatColor.getByChar(cStyle.getCode()));
-                    if (mentionStyle instanceof FormatStyle fStyle)
-                        switch (fStyle.getName()) {
-                            case "bold": component.setBold(true);
-                            case "italic": component.setItalic(true);
-                            case "underline": component.setUnderlined(true);
-                            case "strikethrough": component.setStrikethrough(true);
-                            case "obfuscated": component.setObfuscated(true);
-                        }
-                }
-            }
+            if (style instanceof Quote)
+                for (VisualStyle mentionStyle : node.getFormatter().getQuoteStyles())
+                    handleStyle(component, mentionStyle);
         }
 
         ArrayList<BaseComponent> extra = new ArrayList<>();
@@ -155,5 +124,19 @@ public class SpigotComponentsBuilder extends MessageBuilder<BaseComponent[]> {
         component.setExtra(extra);
 
         return new BaseComponent[]{ component };
+    }
+
+    private static void handleStyle(@NotNull BaseComponent component, @NotNull Style style) {
+        if (style instanceof Color cStyle)
+            component.setColor(ChatColor.getByChar(cStyle.getCode()));
+
+        if (style instanceof FormatStyle fStyle)
+            switch (fStyle.getName()) {
+                case "bold": component.setBold(true);
+                case "italic": component.setItalic(true);
+                case "underline": component.setUnderlined(true);
+                case "strikethrough": component.setStrikethrough(true);
+                case "obfuscated": component.setObfuscated(true);
+            }
     }
 }
