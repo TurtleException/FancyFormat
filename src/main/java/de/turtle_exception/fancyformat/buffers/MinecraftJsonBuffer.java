@@ -34,6 +34,19 @@ public class MinecraftJsonBuffer extends Buffer {
         if (json instanceof JsonPrimitive primitive)
             return List.of(new TextNode(parent, primitive.getAsString()));
 
+        if (json instanceof JsonArray arr) {
+            ArrayList<Node> nodes = new ArrayList<>();
+
+            for (JsonElement element : arr) {
+                UnresolvedNode node = new UnresolvedNode(parent, element.toString(), Format.MINECRAFT_JSON);
+                node.notifyParent();
+
+                nodes.add(node);
+            }
+
+            return nodes;
+        }
+
         if (json instanceof JsonObject) {
             this.object = ((JsonObject) json);
         } else {
@@ -74,7 +87,7 @@ public class MinecraftJsonBuffer extends Buffer {
 
         JsonObject hoverEvent = getOptional(() -> object.getAsJsonObject("hoverEvent"));
         if (hoverEvent != null) {
-            HoverNode        hoverNode = new HoverNode(parent, hoverEvent.get("action").getAsString(), hoverEvent.getAsJsonObject("contents"));
+            HoverNode        hoverNode = new HoverNode(parent, hoverEvent.get("action").getAsString(), hoverEvent.getAsJsonArray("contents"));
             UnresolvedNode contentNode = new UnresolvedNode(hoverNode, toReducedString("hoverEvent"), Format.MINECRAFT_JSON);
             contentNode.notifyParent();
 
