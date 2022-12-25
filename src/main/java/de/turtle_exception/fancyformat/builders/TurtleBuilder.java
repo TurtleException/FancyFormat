@@ -24,7 +24,7 @@ public class TurtleBuilder extends MessageBuilder<JsonElement> {
     }
 
     public @NotNull JsonElement build() {
-        if (node instanceof RootNode rNode) {
+        if (node instanceof RootNode<?> rNode) {
             JsonArray arr = new JsonArray();
             for (Node child : rNode.getChildren())
                 arr.add(new TurtleBuilder(child).build());

@@ -16,20 +16,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class TurtleBuffer extends Buffer {
-    public TurtleBuffer(@NotNull Node parent, @NotNull String raw) {
-        super(parent, raw);
+public class TurtleBuffer extends Buffer<JsonElement> {
+    public TurtleBuffer(@NotNull Node parent, @NotNull JsonElement raw) {
+        super(parent, raw, Format.TURTLE);
     }
 
     @Override
     public @NotNull List<Node> parse() {
-        JsonElement json = getGson().fromJson(raw, JsonElement.class);
-
-        if (json instanceof JsonArray arr) {
+        if (raw instanceof JsonArray arr) {
             ArrayList<Node> nodes = new ArrayList<>();
 
             for (JsonElement element : arr) {
-                UnresolvedNode node = new UnresolvedNode(parent, element.toString(), Format.TURTLE);
+                UnresolvedNode<JsonElement> node = new UnresolvedNode<>(parent, element, Format.TURTLE);
                 node.notifyParent();
 
                 nodes.add(node);
@@ -38,8 +36,8 @@ public class TurtleBuffer extends Buffer {
             return nodes;
         }
 
-        if (!(json instanceof JsonObject object))
-            throw new AssertionError("Cannot comprehend " + json.getClass().getSimpleName());
+        if (!(raw instanceof JsonObject object))
+            throw new AssertionError("Cannot comprehend " + raw.getClass().getSimpleName());
 
         String text = getOptional(() -> object.get("text").getAsString());
         if (text != null)
@@ -109,7 +107,7 @@ public class TurtleBuffer extends Buffer {
         JsonArray children = getOptional(() -> object.getAsJsonArray("children"));
         if (children != null) {
             for (JsonElement child : children) {
-                UnresolvedNode node = new UnresolvedNode(styleNode, child.toString(), Format.TURTLE);
+                UnresolvedNode<JsonElement> node = new UnresolvedNode<>(styleNode, child, Format.TURTLE);
                 node.notifyParent();
             }
         }

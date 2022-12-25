@@ -17,28 +17,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-// TODO: this is extremely inefficient
 // TODO: this ignored a 'false' formatting override
-public class MinecraftJsonBuffer extends Buffer {
-    private JsonElement json;
+public class MinecraftJsonBuffer extends Buffer<JsonElement> {
     private JsonObject object;
 
-    public MinecraftJsonBuffer(@NotNull Node parent, @NotNull String raw) {
-        super(parent, raw);
+    public MinecraftJsonBuffer(@NotNull Node parent, @NotNull JsonElement raw) {
+        super(parent, raw, Format.MINECRAFT_JSON);
     }
 
     @Override
     public @NotNull List<Node> parse() {
-        json = getGson().fromJson(raw, JsonElement.class);
-
-        if (json instanceof JsonPrimitive primitive)
+        if (raw instanceof JsonPrimitive primitive)
             return List.of(new TextNode(parent, primitive.getAsString()));
 
-        if (json instanceof JsonArray arr) {
+        if (raw instanceof JsonArray arr) {
             ArrayList<Node> nodes = new ArrayList<>();
 
             for (JsonElement element : arr) {
-                UnresolvedNode node = new UnresolvedNode(parent, element.toString(), Format.MINECRAFT_JSON);
+                UnresolvedNode<JsonElement> node = new UnresolvedNode<>(parent, element, Format.MINECRAFT_JSON);
                 node.notifyParent();
 
                 nodes.add(node);
@@ -47,8 +43,8 @@ public class MinecraftJsonBuffer extends Buffer {
             return nodes;
         }
 
-        if (json instanceof JsonObject) {
-            this.object = ((JsonObject) json);
+        if (raw instanceof JsonObject) {
+            this.object = ((JsonObject) raw);
         } else {
             return this.asText();
         }
@@ -58,8 +54,8 @@ public class MinecraftJsonBuffer extends Buffer {
             for (Color value : Color.values()) {
                 if (!color.equals(value.getName())) continue;
 
-                StyleNode        styleNode = new StyleNode(parent, value);
-                UnresolvedNode contentNode = new UnresolvedNode(styleNode, toReducedString("color"), Format.MINECRAFT_JSON);
+                StyleNode                     styleNode = new StyleNode(parent, value);
+                UnresolvedNode<JsonElement> contentNode = new UnresolvedNode<>(styleNode, reduce("color"), Format.MINECRAFT_JSON);
                 contentNode.notifyParent();
 
                 return List.of(styleNode);
@@ -69,8 +65,8 @@ public class MinecraftJsonBuffer extends Buffer {
         for (FormatStyle value : FormatStyle.values()) {
             if (!isTrue(value.getName())) continue;
 
-            StyleNode        styleNode = new StyleNode(parent, value);
-            UnresolvedNode contentNode = new UnresolvedNode(styleNode, toReducedString(value.getName()), Format.MINECRAFT_JSON);
+            StyleNode                     styleNode = new StyleNode(parent, value);
+            UnresolvedNode<JsonElement> contentNode = new UnresolvedNode<>(styleNode, reduce(value.getName()), Format.MINECRAFT_JSON);
             contentNode.notifyParent();
 
             return List.of(styleNode);
@@ -78,8 +74,8 @@ public class MinecraftJsonBuffer extends Buffer {
 
         JsonObject clickEvent = getOptional(() -> object.getAsJsonObject("clickEvent"));
         if (clickEvent != null) {
-            ClickNode        clickNode = new ClickNode(parent, clickEvent.get("action").getAsString(), clickEvent.get("value").getAsString());
-            UnresolvedNode contentNode = new UnresolvedNode(clickNode, toReducedString("clickEvent"), Format.MINECRAFT_JSON);
+            ClickNode                     clickNode = new ClickNode(parent, clickEvent.get("action").getAsString(), clickEvent.get("value").getAsString());
+            UnresolvedNode<JsonElement> contentNode = new UnresolvedNode<>(clickNode, reduce("clickEvent"), Format.MINECRAFT_JSON);
             contentNode.notifyParent();
 
             return List.of(clickNode);
@@ -87,8 +83,8 @@ public class MinecraftJsonBuffer extends Buffer {
 
         JsonObject hoverEvent = getOptional(() -> object.getAsJsonObject("hoverEvent"));
         if (hoverEvent != null) {
-            HoverNode        hoverNode = new HoverNode(parent, hoverEvent.get("action").getAsString(), hoverEvent.getAsJsonArray("contents"));
-            UnresolvedNode contentNode = new UnresolvedNode(hoverNode, toReducedString("hoverEvent"), Format.MINECRAFT_JSON);
+            HoverNode                     hoverNode = new HoverNode(parent, hoverEvent.get("action").getAsString(), hoverEvent.getAsJsonArray("contents"));
+            UnresolvedNode<JsonElement> contentNode = new UnresolvedNode<>(hoverNode, reduce("hoverEvent"), Format.MINECRAFT_JSON);
             contentNode.notifyParent();
 
             return List.of(hoverNode);
@@ -105,7 +101,7 @@ public class MinecraftJsonBuffer extends Buffer {
         JsonArray extra = getOptional(() -> object.getAsJsonArray("extra"));
         if (extra != null) {
             for (JsonElement child : extra) {
-                UnresolvedNode node = new UnresolvedNode(parent, child.toString(), Format.MINECRAFT_JSON);
+                UnresolvedNode<JsonElement> node = new UnresolvedNode<>(parent, child, Format.MINECRAFT_JSON);
                 node.notifyParent();
 
                 nodes.add(node);
@@ -133,8 +129,8 @@ public class MinecraftJsonBuffer extends Buffer {
         }
     }
 
-    private @NotNull String toReducedString(@NotNull String key) {
+    private @NotNull JsonObject reduce(@NotNull String key) {
         object.remove(key);
-        return object.toString();
+        return object;
     }
 }

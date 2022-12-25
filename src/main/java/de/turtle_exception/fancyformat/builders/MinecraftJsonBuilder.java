@@ -20,7 +20,7 @@ public class MinecraftJsonBuilder extends MessageBuilder<JsonElement> {
         if (node instanceof TextNode cNode)
             return new JsonPrimitive(cNode.getContent());
 
-        if (node instanceof RootNode rNode) {
+        if (node instanceof RootNode<?> rNode) {
             JsonArray arr = new JsonArray();
             for (Node child : rNode.getChildren())
                 arr.add(new MinecraftJsonBuilder(child).build());

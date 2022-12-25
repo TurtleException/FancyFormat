@@ -47,8 +47,12 @@ public class FancyFormatter {
      * @param format The initial format of {@code content}.
      * @return A {@link FormatText} instance representing the provided message.
      */
-    public @NotNull FormatText newText(@NotNull String content, @NotNull Format<?> format) {
-        return new FormatText(this, content, format);
+    public <T> @NotNull FormatText<T> newText(@NotNull T content, @NotNull Format<T> format) {
+        return new FormatText<>(this, content, format);
+    }
+
+    public @NotNull FormatText<String> newText(@NotNull String content, @NotNull Format<String> format) {
+        return new FormatText<>(this, content, format);
     }
 
     /**
@@ -61,10 +65,17 @@ public class FancyFormatter {
      * @param nativeText Native representation of a message.
      * @return A {@link FormatText} instance representing the provided message.
      */
-    public @NotNull FormatText ofNative(@NotNull String nativeText) {
-        for (Format<?> value : Format.values())
-            if (nativeText.startsWith(value.getCode() + "#"))
-                return this.newText(nativeText.substring((value.getCode() + "#").length()), value);
+    @SuppressWarnings("unchecked")
+    public @NotNull FormatText<String> ofNative(@NotNull String nativeText) throws IllegalArgumentException {
+        for (Format<?> value : Format.values()) {
+            if (nativeText.startsWith(value.getCode() + "#")) {
+                try {
+                    return this.newText(nativeText.substring((value.getCode() + "#").length()), (Format<String>) value);
+                } catch (ClassCastException e) {
+                    throw new IllegalArgumentException(value.getName() + " does not support native text.");
+                }
+            }
+        }
         return this.newText(nativeText, Format.PLAINTEXT);
     }
 

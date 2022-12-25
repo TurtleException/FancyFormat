@@ -14,10 +14,10 @@ import java.util.function.Predicate;
 /**
  * A FormatText is an abstract representation of a text that has been parsed from a formatted text. It can be used to
  * translate that text into any supported {@link Format}.
- * @see FancyFormatter#newText(String, Format)
+ * @see FancyFormatter#newText(Object, Format)
  */
 @SuppressWarnings("unused")
-public class FormatText {
+public class FormatText<T> {
     private final Node root;
     private final int size;
 
@@ -31,7 +31,7 @@ public class FormatText {
      * FormatText text = formatter.newText(content, format);
      * } </pre>
      */
-    FormatText(@NotNull FancyFormatter formatter, @NotNull String content, @NotNull Format<?> format) {
+    FormatText(@NotNull FancyFormatter formatter, @NotNull T content, @NotNull Format<T> format) {
         this.root = new RootNode(formatter, content, format);
         this.size = this.root.resolve();
     }

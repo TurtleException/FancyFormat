@@ -11,12 +11,12 @@ import java.util.function.Function;
 /** Each value of this enum represents a specific text format that is supported by this library. */
 public final class Format<T> {
     /** Raw text that does not have any style or feature. */
-    public static final Format<String> PLAINTEXT = new Format<>(0,
+    public static final Format<String> PLAINTEXT = new Format<String>("PLAINTEXT", 0,
             PlaintextBuffer::new,
             node -> new PlaintextBuilder(node).build(),
             s -> s);
     /** A universal format that preserves every feature or style of every other format. */
-    public static final Format<JsonElement> TURTLE = new Format<>(1,
+    public static final Format<JsonElement> TURTLE = new Format<>("TURTLE", 1,
             TurtleBuffer::new,
             node -> new TurtleBuilder(node).build(),
             JsonElement::toString);
@@ -24,7 +24,7 @@ public final class Format<T> {
      * Discord Markdown format as specified by
      * <a href="https://support.discord.com/hc/en-us/articles/210298617">Discord Support: Markdown Text 101</a>.
      */
-    public static final Format<String> DISCORD = new Format<>(2,
+    public static final Format<String> DISCORD = new Format<String>("DISCORD", 2,
             DiscordBuffer::new,
             node -> new DiscordBuilder(node).build(),
             s -> s);
@@ -32,7 +32,7 @@ public final class Format<T> {
      * Minecraft JSON format as specified by
      * <a href="https://minecraft.fandom.com/wiki/Raw_JSON_text_format">Minecraft Wiki: Raw JSON text format</a>.
      */
-    public static final Format<JsonElement> MINECRAFT_JSON = new Format<>(3,
+    public static final Format<JsonElement> MINECRAFT_JSON = new Format<>("MINECRAFT_JSON", 3,
             MinecraftJsonBuffer::new,
             node -> new MinecraftJsonBuilder(node).build(),
             JsonElement::toString);
@@ -40,21 +40,27 @@ public final class Format<T> {
      * Minecraft legacy formatting codes as specified by
      * <a href="https://minecraft.fandom.com/wiki/Formatting_codes">Minecraft Wiki: Formatting codes</a>.
      */
-    public static final Format<String> MINECRAFT_LEGACY = new Format<>(4,
+    public static final Format<String> MINECRAFT_LEGACY = new Format<String>("MINECRAFT_LEGACY", 4,
             MinecraftLegacyBuffer::new,
             node -> new MinecraftLegacyBuilder(node).build(),
             s -> s);
 
+    private final String name;
     private final int code;
-    private final BiFunction<Node, String, Buffer> mutatorStringToNode;
+    private final BiFunction<Node, T, Buffer<T>> mutatorStringToNode;
     private final   Function<Node, T>              mutatorNodeToObject;
     private final   Function<T   , String>         mutatorObjectToString;
 
-    private Format(int code, BiFunction<Node, String, Buffer> mutatorStringToNode, Function<Node, T> mutatorNodeToObject, Function<T, String> mutatorObjectToString) {
+    private Format(@NotNull String name, int code, BiFunction<Node, T, Buffer<T>> mutatorStringToNode, Function<Node, T> mutatorNodeToObject, Function<T, String> mutatorObjectToString) {
+        this.name = name;
         this.code = code;
         this.mutatorStringToNode = mutatorStringToNode;
         this.mutatorNodeToObject = mutatorNodeToObject;
         this.mutatorObjectToString = mutatorObjectToString;
+    }
+
+    public @NotNull String getName() {
+        return name;
     }
 
     /**
@@ -65,7 +71,7 @@ public final class Format<T> {
         return code;
     }
 
-    public Buffer newBuffer(@NotNull Node parent, @NotNull String raw) {
+    public Buffer<T> newBuffer(@NotNull Node parent, @NotNull T raw) {
         return mutatorStringToNode.apply(parent, raw);
     }
 

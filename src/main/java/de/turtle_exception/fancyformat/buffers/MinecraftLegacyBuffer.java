@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MinecraftLegacyBuffer extends Buffer {
+public class MinecraftLegacyBuffer extends Buffer<String> {
     private char code      = ' ';
     private int  codeIndex = -1;
     private int resetIndex = -1;
@@ -26,7 +26,7 @@ public class MinecraftLegacyBuffer extends Buffer {
     private boolean done = false;
 
     public MinecraftLegacyBuffer(@NotNull Node parent, @NotNull String raw) {
-        super(parent, raw);
+        super(parent, raw, Format.MINECRAFT_LEGACY);
     }
 
     @Override
@@ -68,8 +68,8 @@ public class MinecraftLegacyBuffer extends Buffer {
         String contentStr = raw.substring(codeIndex + 2, resetIndex != -1 ? resetIndex : raw.length());
 
         @SuppressWarnings("ConstantConditions") // getStyle() cannot return null here because it has been checked before
-        StyleNode        styleNode = new StyleNode(parent, getStyle(code));
-        UnresolvedNode contentNode = new UnresolvedNode(styleNode, contentStr, Format.MINECRAFT_LEGACY);
+        StyleNode                styleNode = new StyleNode(parent, getStyle(code));
+        UnresolvedNode<String> contentNode = new UnresolvedNode<>(styleNode, contentStr, Format.MINECRAFT_LEGACY);
         contentNode.notifyParent();
 
 
@@ -81,7 +81,7 @@ public class MinecraftLegacyBuffer extends Buffer {
         nodes.add(styleNode);
 
         if (resetIndex > codeIndex + 2)
-            nodes.add(new UnresolvedNode(parent, raw.substring(resetIndex + (newline ? 0 : 2)), Format.MINECRAFT_LEGACY));
+            nodes.add(new UnresolvedNode<>(parent, raw.substring(resetIndex + (newline ? 0 : 2)), Format.MINECRAFT_LEGACY));
 
         return nodes;
     }
