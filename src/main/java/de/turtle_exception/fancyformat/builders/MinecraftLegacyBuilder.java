@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class MinecraftLegacyBuilder extends MessageBuilder {
+public class MinecraftLegacyBuilder extends MessageBuilder<String> {
     private final String reset = node.getFormatter().getMinecraftFormattingCode() + "r";
 
     public MinecraftLegacyBuilder(@NotNull Node node) {

@@ -13,9 +13,9 @@ import java.util.List;
 public class UnresolvedNode extends Node {
     protected final @NotNull Node parent;
     protected final @NotNull String raw;
-    protected final @NotNull Format format;
+    protected final @NotNull Format<?> format;
 
-    public UnresolvedNode(@NotNull Node parent, @NotNull String raw, @NotNull Format format) {
+    public UnresolvedNode(@NotNull Node parent, @NotNull String raw, @NotNull Format<?> format) {
         super(parent.getFormatter(), parent);
         this.parent = parent;
         this.raw = raw;

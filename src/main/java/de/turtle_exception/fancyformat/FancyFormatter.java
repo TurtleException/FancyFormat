@@ -47,7 +47,7 @@ public class FancyFormatter {
      * @param format The initial format of {@code content}.
      * @return A {@link FormatText} instance representing the provided message.
      */
-    public @NotNull FormatText newText(@NotNull String content, @NotNull Format format) {
+    public @NotNull FormatText newText(@NotNull String content, @NotNull Format<?> format) {
         return new FormatText(this, content, format);
     }
 
@@ -62,7 +62,7 @@ public class FancyFormatter {
      * @return A {@link FormatText} instance representing the provided message.
      */
     public @NotNull FormatText ofNative(@NotNull String nativeText) {
-        for (Format value : Format.values())
+        for (Format<?> value : Format.values())
             if (nativeText.startsWith(value.getCode() + "#"))
                 return this.newText(nativeText.substring((value.getCode() + "#").length()), value);
         return this.newText(nativeText, Format.PLAINTEXT);

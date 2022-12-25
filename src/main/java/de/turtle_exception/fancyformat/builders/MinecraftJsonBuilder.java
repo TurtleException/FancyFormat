@@ -11,24 +11,19 @@ import de.turtle_exception.fancyformat.styles.Quote;
 import de.turtle_exception.fancyformat.styles.VisualStyle;
 import org.jetbrains.annotations.NotNull;
 
-public class MinecraftJsonBuilder extends MessageBuilder {
+public class MinecraftJsonBuilder extends MessageBuilder<JsonElement> {
     public MinecraftJsonBuilder(@NotNull Node node) {
         super(node);
     }
 
-    @Override
-    public @NotNull String build() {
-        return getGson().toJson(this.buildJson());
-    }
-
-    public @NotNull JsonElement buildJson() {
+    public @NotNull JsonElement build() {
         if (node instanceof TextNode cNode)
             return new JsonPrimitive(cNode.getContent());
 
         if (node instanceof RootNode rNode) {
             JsonArray arr = new JsonArray();
             for (Node child : rNode.getChildren())
-                arr.add(new MinecraftJsonBuilder(child).buildJson());
+                arr.add(new MinecraftJsonBuilder(child).build());
             return arr;
         }
 
@@ -67,7 +62,7 @@ public class MinecraftJsonBuilder extends MessageBuilder {
 
         JsonArray extra = new JsonArray();
         for (Node child : node.getChildren())
-            extra.add(new MinecraftJsonBuilder(child).buildJson());
+            extra.add(new MinecraftJsonBuilder(child).build());
         json.add("extra", extra);
 
         return json;

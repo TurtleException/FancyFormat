@@ -6,7 +6,7 @@ import de.turtle_exception.fancyformat.Node;
 import de.turtle_exception.fancyformat.nodes.ContentNode;
 import org.jetbrains.annotations.NotNull;
 
-public class PlaintextBuilder extends MessageBuilder {
+public class PlaintextBuilder extends MessageBuilder<String> {
     public PlaintextBuilder(@NotNull Node node) {
         super(node);
     }

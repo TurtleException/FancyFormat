@@ -1,5 +1,6 @@
 package de.turtle_exception.fancyformat;
 
+import com.google.gson.JsonElement;
 import de.turtle_exception.fancyformat.nodes.MentionNode;
 import de.turtle_exception.fancyformat.nodes.RootNode;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +21,7 @@ public class FormatText {
     private final Node root;
     private final int size;
 
-    private final HashMap<Format, String> stringCache = new HashMap<>();
+    private final HashMap<Format<?>, Object> cache = new HashMap<>();
 
     /**
      * You're probably looking for this:
@@ -30,9 +31,20 @@ public class FormatText {
      * FormatText text = formatter.newText(content, format);
      * } </pre>
      */
-    FormatText(@NotNull FancyFormatter formatter, @NotNull String content, @NotNull Format format) {
+    FormatText(@NotNull FancyFormatter formatter, @NotNull String content, @NotNull Format<?> format) {
         this.root = new RootNode(formatter, content, format);
         this.size = this.root.resolve();
+    }
+
+    @SuppressWarnings("unchecked")
+    public synchronized <T> @NotNull T parse(@NotNull Format<T> format) {
+        if (!cache.containsKey(format))
+            cache.put(format, root.toString(format));
+        return (T) cache.get(format);
+    }
+
+    public JsonElement parse() {
+        return this.parse(Format.TURTLE);
     }
 
     /**
@@ -40,10 +52,8 @@ public class FormatText {
      * @param format Desired text format.
      * @return String representation of this text in the desired format.
      */
-    public synchronized @NotNull String toString(@NotNull Format format) {
-        if (!stringCache.containsKey(format))
-            stringCache.put(format, root.toString(format));
-        return stringCache.get(format);
+    public <T> @NotNull String toString(@NotNull Format<T> format) {
+        return format.getMutatorObjectToString().apply(this.parse(format));
     }
 
     /** Returns this text in the {@link Format#TURTLE} format. */

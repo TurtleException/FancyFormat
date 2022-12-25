@@ -18,8 +18,12 @@ public class Node {
 
     /* - - - */
 
-    public @NotNull String toString(@NotNull Format format) {
-        return format.getMutatorNodeToString().apply(this);
+    public <T> @NotNull T parse(@NotNull Format<T> format) {
+        return format.getMutatorNodeToObject().apply(this);
+    }
+
+    public <T> @NotNull String toString(@NotNull Format<T> format) {
+        return format.getMutatorObjectToString().apply(this.parse(format));
     }
 
     @Override

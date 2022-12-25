@@ -12,7 +12,7 @@ import de.turtle_exception.fancyformat.styles.Quote;
 import de.turtle_exception.fancyformat.styles.FormatStyle;
 import org.jetbrains.annotations.NotNull;
 
-public class DiscordBuilder extends MessageBuilder {
+public class DiscordBuilder extends MessageBuilder<String> {
     public DiscordBuilder(@NotNull Node node) {
         super(node);
     }
