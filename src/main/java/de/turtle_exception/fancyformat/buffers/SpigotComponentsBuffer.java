@@ -110,8 +110,8 @@ public class SpigotComponentsBuffer extends Buffer<BaseComponent[]> {
                 for (Content content : contentsRaw) {
                     Object value = ((Text) content).getValue();
 
-                    if (value instanceof BaseComponent comp) {
-                        FormatText contentText = parent.getFormatter().fromFormat(new BaseComponent[]{ comp }, SpigotComponentsFormat.get());
+                    if (value instanceof BaseComponent[] comp) {
+                        FormatText contentText = parent.getFormatter().fromFormat(comp, SpigotComponentsFormat.get());
 
                         arr.add(contentText.parse(MinecraftJsonFormat.get()));
                     }
