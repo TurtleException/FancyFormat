@@ -52,18 +52,16 @@ public class UnresolvedNode<T> extends Node {
             // remove self
             siblings.remove(i);
 
-            // add new siblings in reverse (because of right-shift insert)
-            int j = nodes.size();
-            while (j--> 0)
-                siblings.add(i, nodes.get(j));
-
             break;
         }
 
         // resolve children of new siblings
         int i = nodes.size();
-        for (Node node : nodes)
+        for (Node node : nodes) {
+            if (!(node instanceof UnresolvedNode<?>))
+                siblings.add(node);
             i += node.resolve();
+        }
         return i;
     }
 }
