@@ -6,19 +6,23 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public abstract class Buffer {
+public abstract class Buffer<T> {
     protected @NotNull Node parent;
-    protected @NotNull String raw;
+    protected @NotNull T raw;
 
-    protected Buffer(@NotNull Node parent, @NotNull String raw) {
+    private final @NotNull Format<T> format;
+
+    protected Buffer(@NotNull Node parent, @NotNull T raw, @NotNull Format<T> format) {
         this.parent = parent;
         this.raw = raw;
+
+        this.format = format;
     }
 
     public abstract @NotNull List<Node> parse();
 
     protected @NotNull List<Node> asText() {
-        return List.of(new TextNode(parent, raw));
+        return List.of(new TextNode(parent, format.makeString(raw)));
     }
 
     protected @NotNull Gson getGson() {

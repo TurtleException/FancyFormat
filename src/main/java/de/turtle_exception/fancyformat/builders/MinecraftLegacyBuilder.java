@@ -1,9 +1,9 @@
 package de.turtle_exception.fancyformat.builders;
 
-import de.turtle_exception.fancyformat.Format;
 import de.turtle_exception.fancyformat.MessageBuilder;
 import de.turtle_exception.fancyformat.Node;
 import de.turtle_exception.fancyformat.Style;
+import de.turtle_exception.fancyformat.formats.MinecraftLegacyFormat;
 import de.turtle_exception.fancyformat.nodes.MentionNode;
 import de.turtle_exception.fancyformat.nodes.StyleNode;
 import de.turtle_exception.fancyformat.nodes.TextNode;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class MinecraftLegacyBuilder extends MessageBuilder {
+public class MinecraftLegacyBuilder extends MessageBuilder<String> {
     private final String reset = node.getFormatter().getMinecraftFormattingCode() + "r";
 
     public MinecraftLegacyBuilder(@NotNull Node node) {
@@ -54,7 +54,7 @@ public class MinecraftLegacyBuilder extends MessageBuilder {
             }
 
             builder.append(prefix);
-            builder.append(child.toString(Format.MINECRAFT_LEGACY));
+            builder.append(child.toString(MinecraftLegacyFormat.get()));
 
             if (!prefix.isEmpty())
                 builder.append(reset);

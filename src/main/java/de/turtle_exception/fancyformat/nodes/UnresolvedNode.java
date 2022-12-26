@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** A node that has not yet been processed. Resolving this node may produce one or more nodes. */
-public class UnresolvedNode extends Node {
+public class UnresolvedNode<T> extends Node {
     protected final @NotNull Node parent;
-    protected final @NotNull String raw;
-    protected final @NotNull Format format;
+    protected final @NotNull T raw;
+    protected final @NotNull Format<T> format;
 
-    public UnresolvedNode(@NotNull Node parent, @NotNull String raw, @NotNull Format format) {
+    public UnresolvedNode(@NotNull Node parent, @NotNull T raw, @NotNull Format<T> format) {
         super(parent.getFormatter(), parent);
         this.parent = parent;
         this.raw = raw;
@@ -36,13 +36,13 @@ public class UnresolvedNode extends Node {
 
                 // replace self
                 siblings.remove(i);
-                siblings.add(i, new TextNode(parent, raw));
+                siblings.add(i, new TextNode(parent, format.makeString(raw)));
 
                 return 1;
             }
         }
 
-        Buffer buffer = format.newBuffer(parent, raw);
+        Buffer<T> buffer = format.newBuffer(parent, raw);
         List<Node> nodes = buffer.parse();
 
         ArrayList<Node> siblings = parent.getChildren();
@@ -52,18 +52,16 @@ public class UnresolvedNode extends Node {
             // remove self
             siblings.remove(i);
 
-            // add new siblings in reverse (because of right-shift insert)
-            int j = nodes.size();
-            while (j--> 0)
-                siblings.add(i, nodes.get(j));
-
             break;
         }
 
         // resolve children of new siblings
         int i = nodes.size();
-        for (Node node : nodes)
+        for (Node node : nodes) {
+            if (!(node instanceof UnresolvedNode<?>))
+                siblings.add(node);
             i += node.resolve();
+        }
         return i;
     }
 }

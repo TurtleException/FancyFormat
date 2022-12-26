@@ -1,5 +1,7 @@
 package de.turtle_exception.fancyformat;
 
+import com.google.gson.JsonElement;
+import de.turtle_exception.fancyformat.formats.TurtleFormat;
 import de.turtle_exception.fancyformat.nodes.MentionNode;
 import de.turtle_exception.fancyformat.nodes.RootNode;
 import org.jetbrains.annotations.NotNull;
@@ -13,26 +15,37 @@ import java.util.function.Predicate;
 /**
  * A FormatText is an abstract representation of a text that has been parsed from a formatted text. It can be used to
  * translate that text into any supported {@link Format}.
- * @see FancyFormatter#newText(String, Format)
+ * @see FancyFormatter#fromFormat(Object, Format)
  */
 @SuppressWarnings("unused")
 public class FormatText {
     private final Node root;
     private final int size;
 
-    private final HashMap<Format, String> stringCache = new HashMap<>();
+    private final HashMap<Format<?>, Object> cache = new HashMap<>();
 
     /**
      * You're probably looking for this:
      * <pre> {@code
      * // reuse this formatter for other texts
      * FancyFormatter formatter = new FancyFormatter();
-     * FormatText text = formatter.newText(content, format);
+     * FormatText text = formatter.from(content, format);
      * } </pre>
      */
-    FormatText(@NotNull FancyFormatter formatter, @NotNull String content, @NotNull Format format) {
-        this.root = new RootNode(formatter, content, format);
+    <T> FormatText(@NotNull FancyFormatter formatter, @NotNull T content, @NotNull Format<T> format) {
+        this.root = new RootNode<>(formatter, content, format);
         this.size = this.root.resolve();
+    }
+
+    @SuppressWarnings("unchecked")
+    public synchronized <U> @NotNull U parse(@NotNull Format<U> format) {
+        if (!cache.containsKey(format))
+            cache.put(format, root.parse(format));
+        return (U) cache.get(format);
+    }
+
+    public JsonElement parse() {
+        return this.parse(TurtleFormat.get());
     }
 
     /**
@@ -40,16 +53,14 @@ public class FormatText {
      * @param format Desired text format.
      * @return String representation of this text in the desired format.
      */
-    public synchronized @NotNull String toString(@NotNull Format format) {
-        if (!stringCache.containsKey(format))
-            stringCache.put(format, root.toString(format));
-        return stringCache.get(format);
+    public <U> @NotNull String toString(@NotNull Format<U> format) {
+        return format.makeString(this.parse(format));
     }
 
-    /** Returns this text in the {@link Format#TURTLE} format. */
+    /** Returns this text in the {@link TurtleFormat}. */
     @Override
     public String toString() {
-        return this.toString(Format.TURTLE);
+        return this.toString(TurtleFormat.get());
     }
 
     /* - MENTIONS - */

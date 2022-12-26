@@ -18,21 +18,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class TurtleBuilder extends MessageBuilder {
+public class TurtleBuilder extends MessageBuilder<JsonElement> {
     public TurtleBuilder(@NotNull Node node) {
         super(node);
     }
 
-    @Override
-    public @NotNull String build() {
-        return getGson().toJson(this.buildJson());
-    }
-
-    public @NotNull JsonElement buildJson() {
-        if (node instanceof RootNode rNode) {
+    public @NotNull JsonElement build() {
+        if (node instanceof RootNode<?> rNode) {
             JsonArray arr = new JsonArray();
             for (Node child : rNode.getChildren())
-                arr.add(new TurtleBuilder(child).buildJson());
+                arr.add(new TurtleBuilder(child).build());
             return arr;
         }
 
@@ -70,7 +65,7 @@ public class TurtleBuilder extends MessageBuilder {
         if (!children.isEmpty()) {
             JsonArray childArr = new JsonArray();
             for (Node child : children)
-                childArr.add(new TurtleBuilder(child).buildJson());
+                childArr.add(new TurtleBuilder(child).build());
             json.add("children", childArr);
         }
 

@@ -1,6 +1,7 @@
 package de.turtle_exception.fancyformat.buffers;
 
 import de.turtle_exception.fancyformat.*;
+import de.turtle_exception.fancyformat.formats.DiscordFormat;
 import de.turtle_exception.fancyformat.nodes.MentionNode;
 import de.turtle_exception.fancyformat.nodes.StyleNode;
 import de.turtle_exception.fancyformat.nodes.UnresolvedNode;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.Range;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DiscordBuffer extends Buffer {
+public class DiscordBuffer extends Buffer<String> {
     private final StyleMarker markerBold          = new StyleMarker('*', 2, FormatStyle.BOLD);
     private final StyleMarker markerItalicsStar   = new StyleMarker('*', 1, FormatStyle.ITALICS);
     private final StyleMarker markerUnderline     = new StyleMarker('_', 2, FormatStyle.UNDERLINE);
@@ -38,7 +39,7 @@ public class DiscordBuffer extends Buffer {
     private boolean done = false;
 
     public DiscordBuffer(@NotNull Node parent, @NotNull String raw) {
-        super(parent, raw);
+        super(parent, raw, DiscordFormat.get());
     }
 
     public @NotNull List<Node> parse() {
@@ -51,8 +52,8 @@ public class DiscordBuffer extends Buffer {
             int linebreak = raw.indexOf("\n");
             String   line = raw.substring(2, linebreak != -1 ? linebreak : raw.length());
 
-            StyleNode      commentNode = new StyleNode(parent, Quote.SINGLE_LINE);
-            UnresolvedNode contentNode = new UnresolvedNode(commentNode, line, Format.DISCORD);
+            StyleNode              commentNode = new StyleNode(parent, Quote.SINGLE_LINE);
+            UnresolvedNode<String> contentNode = new UnresolvedNode<>(commentNode, line, DiscordFormat.get());
             contentNode.notifyParent();
 
             return List.of(commentNode);
@@ -60,8 +61,8 @@ public class DiscordBuffer extends Buffer {
 
         // check for multi line comment
         if (raw.startsWith(">>> ")) {
-            StyleNode      commentNode = new StyleNode(parent, Quote.MULTI_LINE);
-            UnresolvedNode contentNode = new UnresolvedNode(commentNode, raw.substring(4), Format.DISCORD);
+            StyleNode              commentNode = new StyleNode(parent, Quote.MULTI_LINE);
+            UnresolvedNode<String> contentNode = new UnresolvedNode<>(commentNode, raw.substring(4), DiscordFormat.get());
             contentNode.notifyParent();
 
             return List.of(commentNode);
@@ -144,19 +145,19 @@ public class DiscordBuffer extends Buffer {
             str2 = raw.substring(outerFormat.startIndex + outerFormat.length, outerFormat.endIndex);
             str3 = raw.substring(outerFormat.endIndex + outerFormat.length);
 
-            StyleNode        styleNode = new StyleNode(parent, outerFormat.style);
-            UnresolvedNode contentNode = new UnresolvedNode(styleNode, str2, Format.DISCORD);
+            StyleNode                styleNode = new StyleNode(parent, outerFormat.style);
+            UnresolvedNode<String> contentNode = new UnresolvedNode<>(styleNode, str2, DiscordFormat.get());
             contentNode.notifyParent();
 
             ArrayList<Node> nodes = new ArrayList<>();
 
             if (!str1.isEmpty() && !str1.isBlank())
-                nodes.add(new UnresolvedNode(parent, str1, Format.DISCORD));
+                nodes.add(new UnresolvedNode<>(parent, str1, DiscordFormat.get()));
 
             nodes.add(styleNode);
 
             if (!str3.isEmpty() && !str3.isBlank())
-                nodes.add(new UnresolvedNode(parent, str3, Format.DISCORD));
+                nodes.add(new UnresolvedNode<>(parent, str3, DiscordFormat.get()));
 
             return nodes;
         }
@@ -178,12 +179,12 @@ public class DiscordBuffer extends Buffer {
             ArrayList<Node> nodes = new ArrayList<>();
 
             if (!str1.isEmpty() && !str1.isBlank())
-                nodes.add(new UnresolvedNode(parent, str1, Format.DISCORD));
+                nodes.add(new UnresolvedNode<>(parent, str1, DiscordFormat.get()));
 
             nodes.add(mentionNode);
 
             if (!str3.isEmpty() && !str3.isBlank())
-                nodes.add(new UnresolvedNode(parent, str3, Format.DISCORD));
+                nodes.add(new UnresolvedNode<>(parent, str3, DiscordFormat.get()));
 
             return nodes;
         }
