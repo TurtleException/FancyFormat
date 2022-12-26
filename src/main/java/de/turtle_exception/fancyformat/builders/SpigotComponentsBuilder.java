@@ -135,11 +135,11 @@ public class SpigotComponentsBuilder extends MessageBuilder<BaseComponent[]> {
 
         if (style instanceof FormatStyle fStyle)
             switch (fStyle.getName()) {
-                case "bold": component.setBold(true);
-                case "italic": component.setItalic(true);
-                case "underline": component.setUnderlined(true);
-                case "strikethrough": component.setStrikethrough(true);
-                case "obfuscated": component.setObfuscated(true);
+                case "bold"          -> component.setBold(true);
+                case "italic"        -> component.setItalic(true);
+                case "underline"     -> component.setUnderlined(true);
+                case "strikethrough" -> component.setStrikethrough(true);
+                case "obfuscated"    -> component.setObfuscated(true);
             }
     }
 }
