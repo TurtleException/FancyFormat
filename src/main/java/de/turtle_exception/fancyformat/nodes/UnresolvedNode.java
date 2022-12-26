@@ -36,7 +36,7 @@ public class UnresolvedNode<T> extends Node {
 
                 // replace self
                 siblings.remove(i);
-                siblings.add(i, new TextNode(parent, format.getMutatorObjectToString().apply(raw)));
+                siblings.add(i, new TextNode(parent, format.makeString(raw)));
 
                 return 1;
             }

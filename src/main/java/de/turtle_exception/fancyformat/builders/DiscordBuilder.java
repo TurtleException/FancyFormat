@@ -1,9 +1,9 @@
 package de.turtle_exception.fancyformat.builders;
 
-import de.turtle_exception.fancyformat.Format;
 import de.turtle_exception.fancyformat.MessageBuilder;
 import de.turtle_exception.fancyformat.Node;
 import de.turtle_exception.fancyformat.Style;
+import de.turtle_exception.fancyformat.formats.DiscordFormat;
 import de.turtle_exception.fancyformat.nodes.MentionNode;
 import de.turtle_exception.fancyformat.nodes.StyleNode;
 import de.turtle_exception.fancyformat.nodes.TextNode;
@@ -28,7 +28,7 @@ public class DiscordBuilder extends MessageBuilder<String> {
         StringBuilder builder = new StringBuilder();
 
         for (Node child : node.getChildren())
-            builder.append(child.toString(Format.DISCORD));
+            builder.append(child.toString(DiscordFormat.get()));
 
         if (node instanceof StyleNode sNode) {
             Style style = sNode.getStyle();

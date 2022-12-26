@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.turtle_exception.fancyformat.*;
+import de.turtle_exception.fancyformat.formats.MinecraftJsonFormat;
+import de.turtle_exception.fancyformat.formats.SpigotComponentsFormat;
 import de.turtle_exception.fancyformat.nodes.*;
 import de.turtle_exception.fancyformat.styles.Color;
 import de.turtle_exception.fancyformat.styles.FormatStyle;
@@ -44,8 +46,9 @@ public class SpigotComponentsBuilder extends MessageBuilder<BaseComponent[]> {
 
             if (hNode.getAction().equalsIgnoreCase("show_text")) {
                 // parse JSON content
-                FormatText<JsonElement> content = node.getFormatter().newText(contents, Format.MINECRAFT_JSON);
-                Text text = new Text(content.parse(Format.SPIGOT_COMPONENTS));
+                FormatText content = node.getFormatter().fromFormat(contents, MinecraftJsonFormat.get());
+                Text text = new Text(content.parse(SpigotComponentsFormat.get()));
+
 
                 event = new HoverEvent(HoverEvent.Action.SHOW_TEXT, text);
             } else if (hNode.getAction().equalsIgnoreCase("show_item")) {
@@ -79,8 +82,8 @@ public class SpigotComponentsBuilder extends MessageBuilder<BaseComponent[]> {
 
                 BaseComponent name = null;
                 if (obj.has("name")) {
-                    FormatText<JsonElement> content = node.getFormatter().newText(obj.get("name"), Format.MINECRAFT_JSON);
-                    name = new TextComponent(content.parse(Format.SPIGOT_COMPONENTS));
+                    FormatText content = node.getFormatter().fromFormat(obj.get("name"), MinecraftJsonFormat.get());
+                    name = new TextComponent(content.parse(SpigotComponentsFormat.get()));
                 }
 
                 Entity entity = new Entity(type, id, name);

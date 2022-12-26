@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.turtle_exception.fancyformat.*;
+import de.turtle_exception.fancyformat.formats.TurtleFormat;
 import de.turtle_exception.fancyformat.nodes.*;
 import de.turtle_exception.fancyformat.styles.CodeBlock;
 import de.turtle_exception.fancyformat.styles.Color;
@@ -18,7 +19,7 @@ import java.util.concurrent.Callable;
 
 public class TurtleBuffer extends Buffer<JsonElement> {
     public TurtleBuffer(@NotNull Node parent, @NotNull JsonElement raw) {
-        super(parent, raw, Format.TURTLE);
+        super(parent, raw, TurtleFormat.get());
     }
 
     @Override
@@ -27,7 +28,7 @@ public class TurtleBuffer extends Buffer<JsonElement> {
             ArrayList<Node> nodes = new ArrayList<>();
 
             for (JsonElement element : arr) {
-                UnresolvedNode<JsonElement> node = new UnresolvedNode<>(parent, element, Format.TURTLE);
+                UnresolvedNode<JsonElement> node = new UnresolvedNode<>(parent, element, TurtleFormat.get());
                 node.notifyParent();
 
                 nodes.add(node);
@@ -107,7 +108,7 @@ public class TurtleBuffer extends Buffer<JsonElement> {
         JsonArray children = getOptional(() -> object.getAsJsonArray("children"));
         if (children != null) {
             for (JsonElement child : children) {
-                UnresolvedNode<JsonElement> node = new UnresolvedNode<>(styleNode, child, Format.TURTLE);
+                UnresolvedNode<JsonElement> node = new UnresolvedNode<>(styleNode, child, TurtleFormat.get());
                 node.notifyParent();
             }
         }

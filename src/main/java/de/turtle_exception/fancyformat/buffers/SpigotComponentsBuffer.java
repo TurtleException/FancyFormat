@@ -2,6 +2,8 @@ package de.turtle_exception.fancyformat.buffers;
 
 import com.google.gson.*;
 import de.turtle_exception.fancyformat.*;
+import de.turtle_exception.fancyformat.formats.MinecraftJsonFormat;
+import de.turtle_exception.fancyformat.formats.SpigotComponentsFormat;
 import de.turtle_exception.fancyformat.nodes.*;
 import de.turtle_exception.fancyformat.styles.Color;
 import de.turtle_exception.fancyformat.styles.FormatStyle;
@@ -19,7 +21,7 @@ import java.util.function.Consumer;
 
 public class SpigotComponentsBuffer extends Buffer<BaseComponent[]> {
     public SpigotComponentsBuffer(@NotNull Node parent, @NotNull BaseComponent[] raw) {
-        super(parent, raw, Format.SPIGOT_COMPONENTS);
+        super(parent, raw, SpigotComponentsFormat.get());
     }
 
     @Override
@@ -31,7 +33,7 @@ public class SpigotComponentsBuffer extends Buffer<BaseComponent[]> {
             ArrayList<Node> nodes = new ArrayList<>();
 
             for (BaseComponent component : raw) {
-                UnresolvedNode<BaseComponent[]> node = new UnresolvedNode<>(parent, new BaseComponent[]{ component }, Format.SPIGOT_COMPONENTS);
+                UnresolvedNode<BaseComponent[]> node = new UnresolvedNode<>(parent, new BaseComponent[]{ component }, SpigotComponentsFormat.get());
                 node.notifyParent();
 
                 nodes.add(node);
@@ -51,7 +53,7 @@ public class SpigotComponentsBuffer extends Buffer<BaseComponent[]> {
                 duplicate.setColor(null);
 
                 StyleNode styleNode = new StyleNode(parent, value);
-                UnresolvedNode<BaseComponent[]> contentNode = new UnresolvedNode<>(styleNode, new BaseComponent[]{ duplicate }, Format.SPIGOT_COMPONENTS);
+                UnresolvedNode<BaseComponent[]> contentNode = new UnresolvedNode<>(styleNode, new BaseComponent[]{ duplicate }, SpigotComponentsFormat.get());
                 contentNode.notifyParent();
 
                 return List.of(styleNode);
@@ -88,7 +90,7 @@ public class SpigotComponentsBuffer extends Buffer<BaseComponent[]> {
             duplicate.setClickEvent(null);
 
             ClickNode clickNode = new ClickNode(parent, clickEvent.getAction().name().toLowerCase(), clickEvent.getValue());
-            UnresolvedNode<BaseComponent[]> contentNode = new UnresolvedNode<>(clickNode, new BaseComponent[]{ duplicate }, Format.SPIGOT_COMPONENTS);
+            UnresolvedNode<BaseComponent[]> contentNode = new UnresolvedNode<>(clickNode, new BaseComponent[]{ duplicate }, SpigotComponentsFormat.get());
             contentNode.notifyParent();
 
             return List.of(clickNode);
@@ -109,9 +111,9 @@ public class SpigotComponentsBuffer extends Buffer<BaseComponent[]> {
                     Object value = ((Text) content).getValue();
 
                     if (value instanceof BaseComponent comp) {
-                        FormatText<BaseComponent[]> contentText = parent.getFormatter().newText(new BaseComponent[]{comp}, Format.SPIGOT_COMPONENTS);
+                        FormatText contentText = parent.getFormatter().fromFormat(new BaseComponent[]{ comp }, SpigotComponentsFormat.get());
 
-                        arr.add(contentText.parse(Format.MINECRAFT_JSON));
+                        arr.add(contentText.parse(MinecraftJsonFormat.get()));
                     }
 
                     if (value instanceof String str)
@@ -146,8 +148,8 @@ public class SpigotComponentsBuffer extends Buffer<BaseComponent[]> {
                 obj.addProperty("id", entity.getId());
 
                 if (entity.getName() != null) {
-                    FormatText<BaseComponent[]> name = parent.getFormatter().newText(new BaseComponent[]{entity.getName()}, Format.SPIGOT_COMPONENTS);
-                    obj.add("name", name.parse(Format.MINECRAFT_JSON));
+                    FormatText name = parent.getFormatter().fromFormat(new BaseComponent[]{ entity.getName() }, SpigotComponentsFormat.get());
+                    obj.add("name", name.parse(MinecraftJsonFormat.get()));
                 }
 
                 contents = obj;
@@ -157,7 +159,7 @@ public class SpigotComponentsBuffer extends Buffer<BaseComponent[]> {
                 throw new AssertionError("Unsupported HoverAction type: " + hoverEvent.getAction());
 
             HoverNode hoverNode = new HoverNode(parent, hoverEvent.getAction().name().toLowerCase(), contents);
-            UnresolvedNode<BaseComponent[]> contentNode = new UnresolvedNode<>(hoverNode, new BaseComponent[]{ duplicate }, Format.SPIGOT_COMPONENTS);
+            UnresolvedNode<BaseComponent[]> contentNode = new UnresolvedNode<>(hoverNode, new BaseComponent[]{ duplicate }, SpigotComponentsFormat.get());
             contentNode.notifyParent();
 
             return List.of(hoverNode);
@@ -174,7 +176,7 @@ public class SpigotComponentsBuffer extends Buffer<BaseComponent[]> {
 
         if (component.getExtra() != null) {
             for (BaseComponent extra : component.getExtra()) {
-                UnresolvedNode<BaseComponent[]> node = new UnresolvedNode<>(parent, new BaseComponent[]{ extra }, Format.SPIGOT_COMPONENTS);
+                UnresolvedNode<BaseComponent[]> node = new UnresolvedNode<>(parent, new BaseComponent[]{ extra }, SpigotComponentsFormat.get());
                 node.notifyParent();
 
                 nodes.add(node);
@@ -189,7 +191,7 @@ public class SpigotComponentsBuffer extends Buffer<BaseComponent[]> {
         setter.accept(duplicate);
 
         StyleNode styleNode = new StyleNode(parent, style);
-        UnresolvedNode<BaseComponent[]> contentNode = new UnresolvedNode<>(styleNode, new BaseComponent[]{ duplicate }, Format.SPIGOT_COMPONENTS);
+        UnresolvedNode<BaseComponent[]> contentNode = new UnresolvedNode<>(styleNode, new BaseComponent[]{ duplicate }, SpigotComponentsFormat.get());
         contentNode.notifyParent();
 
         return List.of(styleNode);

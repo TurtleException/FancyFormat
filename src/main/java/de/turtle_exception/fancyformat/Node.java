@@ -1,5 +1,6 @@
 package de.turtle_exception.fancyformat;
 
+import de.turtle_exception.fancyformat.formats.TurtleFormat;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,16 +20,16 @@ public class Node {
     /* - - - */
 
     public <T> @NotNull T parse(@NotNull Format<T> format) {
-        return format.getMutatorNodeToObject().apply(this);
+        return format.newBuilder(this).build();
     }
 
     public <T> @NotNull String toString(@NotNull Format<T> format) {
-        return format.getMutatorObjectToString().apply(this.parse(format));
+        return format.makeString(this.parse(format));
     }
 
     @Override
     public String toString() {
-        return this.toString(Format.TURTLE);
+        return this.toString(TurtleFormat.get());
     }
 
     public @NotNull FancyFormatter getFormatter() {

@@ -1,9 +1,9 @@
 package de.turtle_exception.fancyformat.buffers;
 
 import de.turtle_exception.fancyformat.Buffer;
-import de.turtle_exception.fancyformat.Format;
 import de.turtle_exception.fancyformat.Node;
 import de.turtle_exception.fancyformat.Style;
+import de.turtle_exception.fancyformat.formats.MinecraftLegacyFormat;
 import de.turtle_exception.fancyformat.nodes.StyleNode;
 import de.turtle_exception.fancyformat.nodes.TextNode;
 import de.turtle_exception.fancyformat.nodes.UnresolvedNode;
@@ -26,7 +26,7 @@ public class MinecraftLegacyBuffer extends Buffer<String> {
     private boolean done = false;
 
     public MinecraftLegacyBuffer(@NotNull Node parent, @NotNull String raw) {
-        super(parent, raw, Format.MINECRAFT_LEGACY);
+        super(parent, raw, MinecraftLegacyFormat.get());
     }
 
     @Override
@@ -69,7 +69,7 @@ public class MinecraftLegacyBuffer extends Buffer<String> {
 
         @SuppressWarnings("ConstantConditions") // getStyle() cannot return null here because it has been checked before
         StyleNode                styleNode = new StyleNode(parent, getStyle(code));
-        UnresolvedNode<String> contentNode = new UnresolvedNode<>(styleNode, contentStr, Format.MINECRAFT_LEGACY);
+        UnresolvedNode<String> contentNode = new UnresolvedNode<>(styleNode, contentStr, MinecraftLegacyFormat.get());
         contentNode.notifyParent();
 
 
@@ -81,7 +81,7 @@ public class MinecraftLegacyBuffer extends Buffer<String> {
         nodes.add(styleNode);
 
         if (resetIndex > codeIndex + 2)
-            nodes.add(new UnresolvedNode<>(parent, raw.substring(resetIndex + (newline ? 0 : 2)), Format.MINECRAFT_LEGACY));
+            nodes.add(new UnresolvedNode<>(parent, raw.substring(resetIndex + (newline ? 0 : 2)), MinecraftLegacyFormat.get()));
 
         return nodes;
     }

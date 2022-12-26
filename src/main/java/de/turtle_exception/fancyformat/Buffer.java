@@ -22,7 +22,7 @@ public abstract class Buffer<T> {
     public abstract @NotNull List<Node> parse();
 
     protected @NotNull List<Node> asText() {
-        return List.of(new TextNode(parent, format.getMutatorObjectToString().apply(raw)));
+        return List.of(new TextNode(parent, format.makeString(raw)));
     }
 
     protected @NotNull Gson getGson() {

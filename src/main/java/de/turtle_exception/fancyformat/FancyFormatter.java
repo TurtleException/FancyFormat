@@ -2,6 +2,7 @@ package de.turtle_exception.fancyformat;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.turtle_exception.fancyformat.formats.*;
 import de.turtle_exception.fancyformat.styles.VisualStyle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -9,6 +10,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 
 /**
@@ -16,10 +19,20 @@ import java.util.function.BiFunction;
  * rules regarding formatting in cases where the syntax of a format does not satisfy the requirements for translating
  * to that format. It is not required to specify any rules before creating FormatTexts, but by not doing so any
  * edge-cases like Discord mentions will not be formatted and will instead show as raw text.
- * @see FancyFormatter#newText(String, Format)
+ * @see FancyFormatter#fromFormat(Object, Format)
  */
 @SuppressWarnings("unused")
 public class FancyFormatter {
+    private static final Format<?>[] NATIVES = {
+            PlaintextFormat.get(),
+            TurtleFormat.get(),
+            DiscordFormat.get(),
+            MinecraftJsonFormat.get(),
+            MinecraftLegacyFormat.get()
+    };
+
+    private final ConcurrentHashMap<Integer, Format<?>> natives = new ConcurrentHashMap<>();
+
     private char minecraftFormattingCode = '§';
 
     private BiFunction<MentionType, String, String> mentionAliasProvider;
@@ -33,50 +46,54 @@ public class FancyFormatter {
     /** Creates a new FancyFormatter with default settings. */
     public FancyFormatter() {
         this.setMentionAliasProvider(null);
+
+        for (int i = 0; i < NATIVES.length; i++)
+            natives.put(i, NATIVES[i]);
     }
 
-    /* - CREATE TEXT - */
+    /* - - - */
 
-    /**
-     * Creates a new {@link FormatText} object with the provided raw content ({@code content}) and {@link Format}
-     * ({@code format}). The formatted String will be parsed into an AST and can then be translated to any format by
-     * calling {@link FormatText#toString(Format)}. Any edge-cases when parsing to a formatted String are handled
-     * according to the rules set by this {@link FancyFormatter}. These rules can still be changed by changing them on
-     * this FancyFormatter instance.
-     * @param content The raw content of a formatted text.
-     * @param format The initial format of {@code content}.
-     * @return A {@link FormatText} instance representing the provided message.
-     */
-    public <T> @NotNull FormatText<T> newText(@NotNull T content, @NotNull Format<T> format) {
-        return new FormatText<>(this, content, format);
+    public <T> @NotNull FormatText fromFormat(@NotNull T content, @NotNull Format<T> format) {
+        return new FormatText(this, content, format);
     }
 
-    public @NotNull FormatText<String> newText(@NotNull String content, @NotNull Format<String> format) {
-        return new FormatText<>(this, content, format);
+    public <T> @NotNull FormatText fromFormatString(@NotNull String content, @NotNull Format<T> format) throws UnsupportedOperationException {
+        return this.fromFormat(format.makeObject(content), format);
     }
+
+    /* - - - */
 
     /**
      * Attempts to parse the provided String to a FormatText as a native text. Native text is a special format that is
-     * not defined by {@link Format}. It can be used to store messages in their initial format and minimal additional
+     * not defined by a {@link Format}. It can be used to store messages in their initial format and minimal additional
      * information as to what format that is, so the message can be stored as a String and without any further data, but
      * can still be parsed into a {@link FormatText} later.
+     * <br><b> This only supports specific formats! </b>
      * <br> The syntax of native text is not guaranteed to stay unchanged across major versions. A native string may be
      * incompatible in later versions.
      * @param nativeText Native representation of a message.
      * @return A {@link FormatText} instance representing the provided message.
      */
-    @SuppressWarnings("unchecked")
-    public @NotNull FormatText<String> ofNative(@NotNull String nativeText) throws IllegalArgumentException {
-        for (Format<?> value : Format.values()) {
-            if (nativeText.startsWith(value.getCode() + "#")) {
-                try {
-                    return this.newText(nativeText.substring((value.getCode() + "#").length()), (Format<String>) value);
-                } catch (ClassCastException e) {
-                    throw new IllegalArgumentException(value.getName() + " does not support native text.");
-                }
-            }
-        }
-        return this.newText(nativeText, Format.PLAINTEXT);
+    public @NotNull FormatText formNative(@NotNull String nativeText) throws IllegalArgumentException {
+        for (Map.Entry<Integer, Format<?>> entry : natives.entrySet())
+            if (nativeText.startsWith(entry.getKey() + "#"))
+                return this.fromFormatString(nativeText.substring((entry.getKey() + "#").length()), entry.getValue());
+        return this.fromFormat(nativeText, PlaintextFormat.get());
+    }
+
+    public @Nullable Format<?> registerNative(int code, @Nullable Format<?> format) throws IndexOutOfBoundsException, IllegalArgumentException {
+        if (code < 0)
+            throw new IndexOutOfBoundsException("Native codes must be positive integers.");
+        if (code < NATIVES.length)
+            throw new IllegalArgumentException("Native code " + code + " is reserved by static native " + NATIVES[code].getClass().getSimpleName());
+
+        if (format == null)
+            return this.natives.remove(code);
+        return this.natives.put(code, format);
+    }
+
+    public @NotNull Map<Integer, Format<?>> getNatives() {
+        return Map.copyOf(natives);
     }
 
     /* - INTERNAL - */

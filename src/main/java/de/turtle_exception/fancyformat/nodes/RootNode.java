@@ -10,6 +10,6 @@ public class RootNode<T> extends Node {
     public RootNode(@NotNull FancyFormatter formatter, @NotNull T raw, @NotNull Format<T> format) {
         super(formatter, null);
 
-        this.children.add(new UnresolvedNode(this, raw, format));
+        this.children.add(new UnresolvedNode<>(this, raw, format));
     }
 }
