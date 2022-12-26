@@ -183,6 +183,11 @@ public class SpigotComponentsBuffer extends Buffer<BaseComponent[]> {
             }
         }
 
+        // remove first node if it's an empty TextNode
+        if (nodes.size() > 1)
+            if (nodes.get(0) instanceof TextNode tNode && tNode.getContent().isEmpty())
+                nodes.remove(0);
+
         return nodes;
     }
 
