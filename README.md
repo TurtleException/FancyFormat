@@ -21,7 +21,9 @@ too much disk space (by storing text in all formats).
 
 ### !!! Work in progress !!!
 This project is still in development and does not have a stable release yet.
-Sadly, I can't provide an exact due date, but it should be finished before 2023.
+Sadly, I can't provide an exact due date, but it should be finished in early 2023.
+
+Until then, you can use [an alpha version](https://github.com/TurtleException/FancyFormat/releases). But be advised, it is an _alpha_.
 
 ## How it's done
 To translate one message format to another, the given message & format are used to create an Abstract Syntax Tree (AST),
