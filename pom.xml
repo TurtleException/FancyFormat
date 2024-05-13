@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.turtle-exception.fancyformat</groupId>
+    <groupId>de.turtleboi</groupId>
     <artifactId>FancyFormat</artifactId>
-    <version>1.0.0-alpha.4</version>
+    <version>1.1-alpha.1</version>
 
     <name>FancyFormat</name>
     <description>Simple library to translate message formats</description>
@@ -15,7 +15,7 @@
     <!--
          ,,
         (_ \_- -_
-          \  EXC )
+          \TURTLE)
             lU lU
     -->
 
@@ -29,17 +29,38 @@
     <developers>
         <developer>
             <name>TurtleException</name>
-            <email>turtle.exception@eldritch.de</email>
-            <organization>de.turtle_exception</organization>
-            <organizationUrl>https://github.com/TurtleException/FancyFormat</organizationUrl>
+            <email>dev@turtle-mail.de</email>
+            <organization>Burrow Studios</organization>
+            <timezone>Europe/Berlin</timezone>
         </developer>
     </developers>
+
 
     <scm>
         <connection>scm:git:git://github.com/TurtleException/FancyFormat.git</connection>
         <developerConnection>scm:git:ssh://github.com:TurtleException/FancyFormat.git</developerConnection>
         <url>http://github.com/TurtleException/FancyFormat</url>
     </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
 
     <build>
         <plugins>
@@ -113,12 +134,14 @@
         </plugins>
     </build>
 
+
     <repositories>
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
     </repositories>
+
 
     <dependencies>
         <dependency>
@@ -141,15 +164,4 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 </project>
