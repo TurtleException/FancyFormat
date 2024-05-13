@@ -1,10 +1,12 @@
 [version-shield]: https://img.shields.io/github/v/release/TurtleException/FancyFormat?include_prereleases
 [license-shield]: https://img.shields.io/github/license/TurtleException/FancyFormat
+[build-shield]: https://img.shields.io/github/actions/workflow/status/TurtleException/FancyFormat/build.yaml
 
 <img align="right" src=".github/FancyFormat.png" height="200" width="200">
 
 [![version-shield]](https://github.com/TurtleException/FancyFormat/releases)
 [![license-shield]](LICENSE)
+[![build-shield]](https://github.com/TurtleException/FancyFormat/actions/workflows/build.yaml)
 
 # FancyFormat
 A simple library to translate message formats like
